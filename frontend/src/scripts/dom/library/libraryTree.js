@@ -1,17 +1,19 @@
 import { EventsEmit } from '../../../../wailsjs/runtime/runtime';
 import { EventsOn } from '../../../../wailsjs/runtime/runtime';
+import { appState } from '../../cache.js'
 
 
-export function renderLibraryTree(libraryBody, libraryNodes) {
+
+export function renderLibraryTree(libraryBody, libraryNodes, UpdateLibConfig) {
     const libraryTreeContainer = document.createElement("div");
     libraryTreeContainer.id = "library-tree-container"
     libraryBody.append(libraryTreeContainer)
 
-    loadLibraryTree(libraryNodes, libraryTreeContainer)
+    loadLibraryTree(libraryNodes, libraryTreeContainer, UpdateLibConfig)
 
 }
 
-function loadLibraryTree (nodes, container) {
+function loadLibraryTree (nodes, container, UpdateLibConfig) {
 
 
     const newProjectBlock = document.createElement("div");
@@ -48,6 +50,8 @@ function loadLibraryTree (nodes, container) {
         })
         nodeImage.addEventListener("click", () => {
             const projectPath = libraryNode.dataset.path;
+            const libPath = appState.libraryPath
+            UpdateLibConfig(libPath, projectPath)
             EventsEmit("open-project", projectPath);
         })
 

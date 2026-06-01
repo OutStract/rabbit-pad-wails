@@ -1,12 +1,16 @@
-import {appState} from '../../../scripts/cache.js'
+import { EventsEmit } from '../../../../../wailsjs/runtime/runtime';
+import { EventsOn } from '../../../../../wailsjs/runtime/runtime';
+
+import {appState} from '../../../cache.js'
 
 export async function renderProjectTree(containerLeft, onLoad) {
 
     try {
 
-        const projectTitle = appState.projectName
+        const projectName = appState.projectName
 
         const projectTree = await onLoad(appState.activeProjectPath)
+
     
         //Project Tree Container
         const projectContainer = document.createElement("div");
@@ -78,7 +82,6 @@ function libraryNodes(nodes, container) {
 
         name.addEventListener("click", removeFolderEvent)
 
-        console.log(!node.children)
 
             if (node.children) {
             container.append(childrenBlock)  // This is a check to make sure only folders WITH children get the storage space, keeping the dom clean

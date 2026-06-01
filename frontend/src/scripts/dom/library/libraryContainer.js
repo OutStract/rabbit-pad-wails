@@ -5,7 +5,7 @@ import { appState } from '../../cache.js'
 
 
 
-export async function renderLibrary(app, libraryNodes, {makeProject}) {
+export async function renderLibrary(app, libraryNodes, {makeProject, updateConfig}) {
 
     try {
 
@@ -34,7 +34,7 @@ export async function renderLibrary(app, libraryNodes, {makeProject}) {
         libraryHeader.textContent = appState.libraryName
         
 
-        renderLibraryTree(libraryBody, libraryNodes)
+        renderLibraryTree(libraryBody, libraryNodes, updateConfig)
 
         libraryContainer.append(libraryHeader,libraryBody)
 

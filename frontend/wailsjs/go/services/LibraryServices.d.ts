@@ -4,4 +4,8 @@ import {services} from '../models';
 
 export function LoadLib(arg1:string):Promise<Array<services.LibraryTree>>;
 
+export function LoadLibConfig(arg1:string):Promise<string|boolean>;
+
 export function MakeLib(arg1:string,arg2:string):Promise<void>;
+
+export function UpdateLibConfig(arg1:string,arg2:string):Promise<void>;

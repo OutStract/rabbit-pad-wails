@@ -29,5 +29,15 @@ EventsOn("open-project", (path) => {
     const nameExtract = nameSplit.pop()
     appState.projectName = nameExtract
 
-    appState.activeProjectPath = path
+    
+})
+
+EventsOn("lib-config-update", (message) => {
+    console.log("Message from library config update:", message)
+})
+
+
+EventsOn("lib-config-found", (message) => {
+    console.log("Message from library config update:", message)
+    appState.activeProjectPath = message
 })

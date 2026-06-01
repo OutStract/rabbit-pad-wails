@@ -11,7 +11,7 @@ import { renderHeader } from './scripts/dom/project-page/header.js';
 import { renderStartUp } from './scripts/dom/startup'
 import { renderLibrary } from './scripts/dom/library/libraryContainer'
 import { ConfigCheck, UpdateConfig  } from '../wailsjs/go/services/StartUpServices.js';
-import { MakeLib, LoadLib } from '../wailsjs/go/services/LibraryServices.js';
+import { MakeLib, LoadLib, LoadLibConfig, UpdateLibConfig } from '../wailsjs/go/services/LibraryServices.js';
 import { MakeProject, ReadProject } from '../wailsjs/go/services/ProjectServices.js';
 
 
@@ -20,17 +20,23 @@ async function startUpCheck() {
     try{
 
         const configCheck = await ConfigCheck()
+        console.log("MAIN.JS", "STARTUP UP", "CONFIG CHECK", configCheck)
 
         if (!configCheck) {
-            console.log(configCheck)
             renderStartUp(app, {onCreate: UpdateConfig, forLib: MakeLib})
             return
         } 
 
-            const libraryNodes = await LoadLib(configCheck)
-            await renderLibrary(app,libraryNodes, {makeProject: MakeProject})
+        const projectConfig = await LoadLibConfig(configCheck)
+        console.log("MAIN.JS", "LIBRARY", "CONFIG CHECK", projectConfig)
 
-      //  await renderProjectContainer(app, {onLoad: ReadProject});
+        if(!projectConfig) {
+            const libraryNodes = await LoadLib(configCheck)
+            await renderLibrary(app,libraryNodes, {makeProject: MakeProject, updateConfig: UpdateLibConfig})
+            return
+        }
+
+        await renderProjectContainer(app, {onLoad: ReadProject});
 
     
     } 
@@ -76,5 +82,16 @@ EventsOn("library-loaded", (message) => {
 
 EventsOn("project-read", (message) => {
     
+})
+
+EventsOn("lib-config-update", (message) => {
+    console.log("Message from library config update:", message)
+    app.innerHTML = ""
+    startUpCheck()
+})
+
+
+EventsOn("lib-config-found", (message) => {
+    console.log("Message from Load Library config:", message)
 })
 

@@ -6,6 +6,14 @@ export function LoadLib(arg1) {
   return window['go']['services']['LibraryServices']['LoadLib'](arg1);
 }
 
+export function LoadLibConfig(arg1) {
+  return window['go']['services']['LibraryServices']['LoadLibConfig'](arg1);
+}
+
 export function MakeLib(arg1, arg2) {
   return window['go']['services']['LibraryServices']['MakeLib'](arg1, arg2);
+}
+
+export function UpdateLibConfig(arg1, arg2) {
+  return window['go']['services']['LibraryServices']['UpdateLibConfig'](arg1, arg2);
 }
