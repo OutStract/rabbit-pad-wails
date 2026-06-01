@@ -203,7 +203,7 @@ const fortifyMetadataExtension = EditorState.transactionFilter.of((tr) => {
     ]
 
     let state = EditorState.create({
-        doc: ` chapterId:123456 the turtle`, 
+        doc: `chapterId:123456\n\n`, 
         extensions: editorExtentions
     })
 

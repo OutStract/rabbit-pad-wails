@@ -9,3 +9,7 @@ export function ConfigCheck() {
 export function StartUpManager(arg1, arg2) {
   return window['go']['services']['StartUpServices']['StartUpManager'](arg1, arg2);
 }
+
+export function UpdateConfig(arg1, arg2) {
+  return window['go']['services']['StartUpServices']['UpdateConfig'](arg1, arg2);
+}

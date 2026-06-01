@@ -1,11 +1,11 @@
 
-export function renderHeader(homeContainer) {
+export function renderHeader(projectContainer) {
     //Header Container
     const header = document.createElement("header");
     header.classList.add("header");
 
     //appending to app
-    homeContainer.append(header);
+    projectContainer.append(header);
 
     //Left Buttons container
     const leftBtns = document.createElement("div");

@@ -18,8 +18,10 @@ func (d *DialogServices) OpenDirectory() (string, error) {
 	dirPath, err := runtime.OpenDirectoryDialog(d.Ctx, options)
 
 	if err != nil {
-		LogError("There was a problem in getting directory path:", err)
+		LogError("[DialogServices]","There was a problem in getting directory path:", err)
 	}
+
+	LogSuccess("[DialogServices]", "Library Path captured succesfully")
 
 	return dirPath, nil
 

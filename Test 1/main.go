@@ -32,13 +32,13 @@ type Folder struct {
 		Path string
 		IsFolder bool
 		Children []any
-	}
+}
 
-	type File struct {
-		Name string
-		Path string
-		IsFolder bool
-	}
+type File struct {
+	Name string
+	Path string
+	IsFolder bool
+}
 
 func readTree(root string) []any {
 	tree := []any{}

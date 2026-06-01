@@ -1,5 +1,6 @@
 :root {
     --border-color: #656565 solid 0.1px;
+    --border-radius: 12px;
     --thread: #656565 solid 0.5px;
     --left-min-w: 256px;
     --right-min-w: 300px;
@@ -7,6 +8,12 @@
     --padding-min: 8px;
     --padding-max: 24px;
     --base-color: #D9D9D9;
+    --header-height: 36px;
+    --library-icon: 150px;
+    --library-font-size: 18px;
+    --button-w: 150px;
+    --button-h: 30px;
+    --button-radius: 8px;
 
 }
 
@@ -22,8 +29,6 @@
     border-radius: 10px;
     font-family: "SN Pro", sans-serif;
 } 
-
-
 
 .startup {
     /* border: solid red 1px; */
@@ -87,12 +92,12 @@
 }
 
 .start-btn {
-    width: 150px;
-    height: 30px;
+    width: var(--button-w);
+    height: var(--button-h);
     padding:0;
     margin:0;
     background-color:var(--base-color);
-    border-radius: 4px;
+    border-radius: var(--button-radius);
     border-style:none;
     
 }
@@ -128,19 +133,124 @@ hr {
 
 }
 
+/*===================== library =====================*/
 
-/*===================== Library =====================*/
+#library-container{
+    width: 100vw;
+    height:100vh;
+    display: flex;
+    flex-direction: column;
+    align-items:center;
+    position: relative;
+}
 
-#home-container {
-    display: grid;
-    grid-template-rows: auto 1fr;
+#library-header{
+    height: var(--header-height);
+    width:100%;
+    border-bottom: var(--border-color);
+    font-size: 24px;
+}
+
+#library-tree-container {
+    display: flex;
+    flex-wrap:wrap;
+}
+
+#new-project-block{
+    display:flex;
+    flex-direction: column;
+}
+
+.new-project-btn{
+    font-size: var(--library-icon);
+}
+
+.new-project-text {
+    margin:0;
+    padding:0;
+    font-size: var(--library-font-size);
+}
+
+#library-node{
+    display:flex;
+    flex-direction: column;
+}
+
+#library-node .material-symbols-outlined {
+    font-size: var(--library-icon);
+    font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24
+}
+
+.lib-project-name {
+    margin:0;
+    padding:0;
+    font-size: var(--library-font-size);
+}
+
+
+/*===================== new Project btn =====================*/
+
+.add-project-block {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background-color: var(--base-color);
+    border: var(--border-color);
+    height: 40vh;
+    width: 64vh;
+    z-index: 20;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: var(--border-radius)
+}
+
+#add-project-header{
+    display: flex;
+    justify-content: end;
+    border-bottom: var(--border-color);;
+}
+
+#lib-new-proj-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+}
+
+#new-proj-input {
+    width: 75%;
+    height: var(--header-height);
+    text-align: center;
+}
+
+#create-proj-btn{
+    width: var(--button-w);
+    height: var(--button-h);
+    border-radius: var(--button-radius);
+    border-style:none;
+    padding:0;
+    margin:0;
+}
+
+/*===================== project =====================*/
+
+#project-container {
+    display: flex;
+    flex-direction: column;
     width: 100vw;
     height:100vh;
     overflow: hidden
     
 }
 
-#home-body {
+#project-body {
     display:flex;
     justify-content: space-between;
     height: 100%;
@@ -153,10 +263,11 @@ hr {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 36px;
+    height: var(--header-height);
     border-bottom:var(--border-color);
     padding: 0 var(--padding-min);
 }
+
 
 
 /*===================== Left Side Project View =====================*/

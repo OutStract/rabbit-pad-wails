@@ -1,10 +1,10 @@
 
-const app = document.getElementById("app");
 
 import { OpenDirectory } from '../../../wailsjs/go/services/DialogServices.js';
-import { StartUpManager } from '../../../wailsjs/go/services/StartUpServices.js';
+import { StartUpManager, UpdateConfig } from '../../../wailsjs/go/services/StartUpServices.js';
+import { MakeLib } from '../../../wailsjs/go/services/LibraryServices.js';
 
-export function renderStartUp () {
+export function renderStartUp (app, {onCreate, forLib}) {
     //Welcome container
     const welcome = document.createElement("div");
     welcome.id = "welcome"
@@ -75,7 +75,7 @@ export function renderStartUp () {
         libraryLocationInput.innerText = "Browse";
         libraryLocationInput.classList.add('start-btn')
         
-        libraryLocationInput.addEventListener("click",     async () => {
+        libraryLocationInput.addEventListener("click", async () => {
             console.log("Clicked")
             try {
                 
@@ -113,8 +113,8 @@ export function renderStartUp () {
                 alert ("Name or Path Can't be empty")
                 return
             }
-            const result = await StartUpManager(libName, libPath)
-            console.log(result)
+            await onCreate(libName, libPath)
+            await forLib(libName, libPath)
         })
         libraryCreate.append(msg3, libraryCreateBtn);
         
@@ -122,22 +122,23 @@ export function renderStartUp () {
         const seperator = document.createElement("hr")
 
 
+        /* ================ ADD THIS LATER ============ */
         // Open existing library button
-        const openLibrary = document.createElement("div");
-        openLibrary.classList.add("msg-container")
+        // const openLibrary = document.createElement("div");
+        // openLibrary.classList.add("msg-container")
 
-        const msg4 = document.createElement("p");
-        msg4.innerText = "Open existing library";
-        msg4.classList.add('msg')
+        // const msg4 = document.createElement("p");
+        // msg4.innerText = "Open existing library";
+        // msg4.classList.add('msg')
 
-        const openLibraryBtn = document.createElement("button");
-        openLibraryBtn.innerText = "Open";
-        openLibraryBtn.classList.add('start-btn')
-        openLibrary.append(msg4, openLibraryBtn);
+        // const openLibraryBtn = document.createElement("button");
+        // openLibraryBtn.innerText = "Open";
+        // openLibraryBtn.classList.add('start-btn')
+        // openLibrary.append(msg4, openLibraryBtn);
 
 
     //Appednig library operations to library container
-    libraryOperations.append(libraryName, libraryLocation, libraryCreate,seperator, openLibrary);
+    libraryOperations.append(libraryName, libraryLocation, libraryCreate);
 
     // Appending to right side
     rightSide.append(name, libraryOperations);

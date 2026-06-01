@@ -15,10 +15,13 @@ var assets embed.FS
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
+	//startupService := services.NewStartUpServices() Might remove it later
 
 	//Initialize services
 	startupServices := &services.StartUpServices{}
 	dialogServices := &services.DialogServices{}
+	libraryServices := &services.LibraryServices{}
+	projectServices := &services.ProjectServices{}
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -34,13 +37,17 @@ func main() {
 		OnStartup: func(ctx context.Context) {
 			app.startup(ctx)                  // Let the main app setup its window
 			dialogServices.Ctx = ctx          // Pass the live UI context to your dialogs!
-			// startupServices.Ctx = ctx       // (If your startup service needs it later)
+			startupServices.Ctx = ctx       // (If your startup service needs it later)
+			libraryServices.Ctx = ctx
+			projectServices.Ctx = ctx
 		},
 
 		Bind: []interface{}{
 			app,
 			startupServices,
+			libraryServices,
 			dialogServices,
+			projectServices,
 		},
 	})
 
