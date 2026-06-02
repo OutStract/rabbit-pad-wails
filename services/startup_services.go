@@ -64,7 +64,7 @@ func (s *StartUpServices) ConfigCheck() (string, bool) {
 	LogInfo("[StartUpServices]","User config Directory is", configPath)
 	message := activeLib.ActiveLibrary
 	if s.Ctx != nil {
-		runtime.EventsEmit(s.Ctx, "config-found", message)
+		runtime.EventsEmit(s.Ctx, "startup-config-found", message)
 		LogInfo("[StartUpServices]","Config file data emitted")
     }
 	return activeLib.ActiveLibrary, true
@@ -144,7 +144,7 @@ func (s *StartUpServices) UpdateConfig(LibName, LibPath string) {
 
 		message := configPath
 			if s.Ctx != nil {
-			runtime.EventsEmit(s.Ctx, "config-update", message)
+			runtime.EventsEmit(s.Ctx, "startup-config-update", message)
 			LogInfo("[StartUpServices]", "Config Directory creation event emitted successfully")
     		}
 	
@@ -198,9 +198,9 @@ func (s *StartUpServices) UpdateConfig(LibName, LibPath string) {
 
 	LogSuccess("[StartUpServices]","Config have been updated successfully", configPath)
 
-	message := "Config Updated"
+	message := configPath
 	if s.Ctx != nil {
-        runtime.EventsEmit(s.Ctx, "config-update", message)
+        runtime.EventsEmit(s.Ctx, "startup-config-update", message)
 		LogInfo("[StartUpServices]", "Config update event emitted successfully")
     }
 }

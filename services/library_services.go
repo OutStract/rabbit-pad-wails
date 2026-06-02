@@ -65,7 +65,7 @@ type LibraryTree struct {
 	LastMod string `json:"lastMod"`
 }
 
-func (l *LibraryServices) LoadLib(libRoot string) []LibraryTree {
+func (l *LibraryServices) LibTree(libRoot string) []LibraryTree {
 
 	LibTree := []LibraryTree{}
 

@@ -22,6 +22,7 @@ func main() {
 	dialogServices := &services.DialogServices{}
 	libraryServices := &services.LibraryServices{}
 	projectServices := &services.ProjectServices{}
+	fileServices := &services.FileServices{}
 
 	// Create application with options
 	err := wails.Run(&options.App{
@@ -40,6 +41,7 @@ func main() {
 			startupServices.Ctx = ctx       // (If your startup service needs it later)
 			libraryServices.Ctx = ctx
 			projectServices.Ctx = ctx
+			fileServices.Ctx = ctx
 		},
 
 		Bind: []interface{}{
@@ -48,6 +50,7 @@ func main() {
 			libraryServices,
 			dialogServices,
 			projectServices,
+			fileServices,
 		},
 	})
 

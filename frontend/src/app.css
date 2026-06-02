@@ -241,7 +241,7 @@ hr {
 
 /*===================== project =====================*/
 
-#project-container {
+#main-project-container {
     display: flex;
     flex-direction: column;
     width: 100vw;

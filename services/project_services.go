@@ -46,7 +46,7 @@ type ProjectNode struct {
 
 }
 
-func (p *ProjectServices) ReadProject (projectRoot string) []ProjectNode  {
+func (p *ProjectServices) ProjectTree (projectRoot string) []ProjectNode  {
 	projectTree := []ProjectNode{}
 
 	projectNodes, err := os.ReadDir(projectRoot)
@@ -63,7 +63,7 @@ func (p *ProjectServices) ReadProject (projectRoot string) []ProjectNode  {
 				Name: entry.Name(),
 				Path: fullPath,
 				IsFolder: entry.IsDir(),
-				Children: p.ReadProject(fullPath),
+				Children: p.ProjectTree(fullPath),
 			}
 			projectTree = append(projectTree, node)
 		} else {
@@ -77,9 +77,9 @@ func (p *ProjectServices) ReadProject (projectRoot string) []ProjectNode  {
 		}
 	}
 	LogSuccess("[ProjectServices]", "The project tree has been read successfully")
-	message := projectRoot
+	message := projectTree
 	if p.Ctx != nil {
-		runtime.EventsEmit(p.Ctx, "project-read", message)
+		runtime.EventsEmit(p.Ctx, "project-tree", message)
 		LogInfo("[ProjectServices]", "EVENT EMIT Project Read successfully")
     }
 	return projectTree

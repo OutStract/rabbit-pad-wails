@@ -6,6 +6,6 @@ export function MakeProject(arg1, arg2) {
   return window['go']['services']['ProjectServices']['MakeProject'](arg1, arg2);
 }
 
-export function ReadProject(arg1) {
-  return window['go']['services']['ProjectServices']['ReadProject'](arg1);
+export function ProjectTree(arg1) {
+  return window['go']['services']['ProjectServices']['ProjectTree'](arg1);
 }

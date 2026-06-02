@@ -1,10 +1,11 @@
 
+import {startUpServices, libraryServices} from '/src/api/api.js'
+import { get, skeleton } from '/src/appstate/skeleton.js'
 
-import { OpenDirectory } from '../../../wailsjs/go/services/DialogServices.js';
-import { StartUpManager, UpdateConfig } from '../../../wailsjs/go/services/StartUpServices.js';
-import { MakeLib } from '../../../wailsjs/go/services/LibraryServices.js';
+import { OpenDirectory } from '../../wailsjs/go/services/DialogServices.js';
 
-export function renderStartUp (app, {onCreate, forLib}) {
+export function renderStartUp () {
+    const app = get("app", "app")
     //Welcome container
     const welcome = document.createElement("div");
     welcome.id = "welcome"
@@ -113,8 +114,8 @@ export function renderStartUp (app, {onCreate, forLib}) {
                 alert ("Name or Path Can't be empty")
                 return
             }
-            await onCreate(libName, libPath)
-            await forLib(libName, libPath)
+            await startUpServices.UPDATE_CONFIG("startup.js",libName, libPath)
+            await libraryServices.MAKE_LIB("startup.js",libName, libPath)
         })
         libraryCreate.append(msg3, libraryCreateBtn);
         

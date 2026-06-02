@@ -1,17 +1,17 @@
-import { EventsEmit } from '../../../../../wailsjs/runtime/runtime';
-import { EventsOn } from '../../../../../wailsjs/runtime/runtime';
+import {events, emit} from '/src/events/events.js'
+import {logger} from '/src/logs/logger.js'
+import {projectServices} from '/src/api/api.js'
 
-import {appState} from '../../../cache.js'
+
 
 export async function renderProjectTree(containerLeft, onLoad) {
 
     try {
 
+
         const projectName = appState.projectName
 
-        const projectTree = await onLoad(appState.activeProjectPath)
-
-    
+        // const projectTree = await onLoad(appState.activeProjectPath)
         //Project Tree Container
         const projectContainer = document.createElement("div");
         projectContainer.classList.add("project-container");
@@ -23,16 +23,25 @@ export async function renderProjectTree(containerLeft, onLoad) {
         const projectTitle = document.createElement("h2");
         projectTitle.textContent = projectName;
         projectTitle.classList.add("project-title")
+
+        
     
         //Project Nodes Container
         const projectNodesContainer = document.createElement("div");
         projectNodesContainer.id = 'project-nodes-container'
+
+        EventsOn("file-created", async () => {
+            projectNodesContainer.innerHTML = ""
+            
+            await libraryNodes(projectNodesContainer, onLoad)
+        })
     
-        libraryNodes(projectTree, projectNodesContainer)
-        console.log(projectTree)
+        await libraryNodes(projectNodesContainer, onLoad)
     
         //Appending to library container
         projectContainer.append(projectTitle, projectNodesContainer);
+
+        
 
     } catch(err) {
         console.log(err)
@@ -40,11 +49,13 @@ export async function renderProjectTree(containerLeft, onLoad) {
 
 }
 
-function libraryNodes(nodes, container) {
 
-    console.log(nodes)
+async function libraryNodes(container, onLoad) {
     //So comment time because i am sure i will forget what i did
 
+    const nodes = await projectServices.PROJECT_TREE("projectTree.js" ,appState.activeProjectPath)
+
+    logger.INFO("DOM", "projectTree.js", "Rendering project tree", null)
     nodes.forEach ( node => { // Simple taking the json file of all the folders and moveing them one by one in a loop
 
         let folderIsOpen = false

@@ -1,4 +1,4 @@
-import { appState } from '../../cache.js'
+
 
 
 export async function renderNewProject(libraryContainer, makeProject) {

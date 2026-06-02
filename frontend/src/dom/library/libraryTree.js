@@ -1,20 +1,29 @@
-import { EventsEmit } from '../../../../wailsjs/runtime/runtime';
-import { EventsOn } from '../../../../wailsjs/runtime/runtime';
-import { appState } from '../../cache.js'
+import {events, emit} from '/src/events/events.js'
+import { appstate } from '/src/appstate/appstate.js'
+import { libraryServices } from '/src/api/api.js'
+import {register, get} from '/src/appstate/skeleton.js'
 
 
 
-export function renderLibraryTree(libraryBody, libraryNodes, UpdateLibConfig) {
+export function renderLibraryTree() {
+    const libraryBody = get("library", "libraryBody")
+    
     const libraryTreeContainer = document.createElement("div");
     libraryTreeContainer.id = "library-tree-container"
+    register("library", "libraryTreeContainer", libraryTreeContainer)
+
     libraryBody.append(libraryTreeContainer)
 
-    loadLibraryTree(libraryNodes, libraryTreeContainer, UpdateLibConfig)
+    loadLibraryTree()
 
 }
 
-function loadLibraryTree (nodes, container, UpdateLibConfig) {
+async function loadLibraryTree () {
 
+    const libRoot = appstate.library.path
+    const nodes = await libraryServices.LIB_TREE("main.js",libRoot)
+    const container = get("library", "libraryTreeContainer")
+    container.replaceChildren()
 
     const newProjectBlock = document.createElement("div");
     newProjectBlock.id = "new-project-block"
@@ -24,8 +33,9 @@ function loadLibraryTree (nodes, container, UpdateLibConfig) {
     const newProjectBtn = document.createElement("span");
     newProjectBtn.classList.add("material-symbols-outlined", "new-project-btn");
     newProjectBtn.textContent = "add_box";
+
     newProjectBtn.addEventListener("click", () => {
-        EventsEmit("new-project");
+        emit(events.NEW_PROJECT);
         
     })
 
@@ -48,10 +58,11 @@ function loadLibraryTree (nodes, container, UpdateLibConfig) {
         nodeImage.addEventListener("mouseenter", () => {
             nodeImage.textContent = "folder_open";
         })
-        nodeImage.addEventListener("click", () => {
+        nodeImage.addEventListener("click", async () => {
             const projectPath = libraryNode.dataset.path;
-            const libPath = appState.libraryPath
-            UpdateLibConfig(libPath, projectPath)
+            const libPath = appstate.library.path
+
+            await libraryServices.UPDATE_LIB_CONFIG(libPath, projectPath)
             EventsEmit("open-project", projectPath);
         })
 

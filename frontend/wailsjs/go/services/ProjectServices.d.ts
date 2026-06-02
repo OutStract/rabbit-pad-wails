@@ -4,4 +4,4 @@ import {services} from '../models';
 
 export function MakeProject(arg1:string,arg2:string):Promise<void>;
 
-export function ReadProject(arg1:string):Promise<Array<services.ProjectNode>>;
+export function ProjectTree(arg1:string):Promise<Array<services.ProjectNode>>;

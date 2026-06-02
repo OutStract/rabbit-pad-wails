@@ -4,7 +4,7 @@ import { renderMiddleArea } from './middle/middleContainer.js';
 import { renderRightSide } from './rigth-side/containerRight.js';
 import { renderHeader } from './header.js';
 
-export async function renderProjectContainer(app, {onLoad}) {
+export async function renderProjectContainer(app, {onLoad, onCreate}) {
 
     try {
 
@@ -12,7 +12,7 @@ export async function renderProjectContainer(app, {onLoad}) {
     
         // Home Container
         const projectContainer = document.createElement("div");
-        projectContainer.id = "project-container";
+        projectContainer.id = "main-project-container";
     
         //Appending to app
         app.appendChild(projectContainer);
@@ -24,7 +24,7 @@ export async function renderProjectContainer(app, {onLoad}) {
         projectBody.id = 'project-body'
         projectContainer.append(projectBody)
         
-        await renderLeftSide(projectBody, onLoad);
+        await renderLeftSide(projectBody, onLoad, onCreate);
         renderMiddleArea(projectBody);
         renderRightSide(projectBody)
 
