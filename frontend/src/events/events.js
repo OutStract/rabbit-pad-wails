@@ -3,8 +3,27 @@ import {appstate} from '/src/appstate/appstate.js'
 import {logger} from '/src/logs/logger.js'
 
 export const events = {
-    RELOAD_APP: "reload-app-startup",
-    NEW_PROJECT: "new-project"
+    app: {
+        reload: "reload-app-startup",
+    },
+    project: {
+        req: {
+            create: "new-project",
+            open: "open-project",
+            close: "close-project"
+        },
+        res: {
+            created: "new-project-created"
+        },
+    }, 
+    file: {
+        req: {
+            read: "read-file"
+        },
+        res: {
+            created: "new-file"
+        }
+    }
 }
 
 export function emit(event) {
@@ -12,7 +31,25 @@ export function emit(event) {
     EventsEmit(event)
 }
 
+export function ON(event, {callback}) {
+    EventsOn(event, () => {
+        callback()
+    })
+}
 
+/*======= FRONTEND EVENTS ========*/
+
+EventsOn("open-project", (message) => {
+    logger.INFO("OPEN PROJECT EVENT", "events.js", "Project is opend", message, null)
+})
+
+EventsOn("close-project", (message) => {
+    logger.INFO("PROJECT EVENT", "events.js", "Project Closed", message, null)
+})
+
+EventsOn("new-project", (message) => {
+    logger.INFO("PROJECT EVENT", "events.js", "Create Project", message, null)
+})
 
 /*======= START UP SERVICES ========*/
 
@@ -44,11 +81,12 @@ EventsOn("library-loaded", (message) => {
 })
 
 EventsOn("lib-config-found", (message) => {
-    
+    appstate.project.path = message
     logger.INFO("LIBRARY EVENT", "events.js", "Library config found", message, null)
 })
 
 EventsOn("lib-config-update", (message) => {
+    
     logger.INFO("LIBRARY EVENT", "events.js", "Library config update", message, null)
 })
 
@@ -56,16 +94,24 @@ EventsOn("lib-config-update", (message) => {
 
 EventsOn("project-created", (message) => {
     logger.INFO("PROJECT EVENT", "events.js", "Project Created", message, null)
+    appstate.project.newProjectPath = message
+    emit(events.project.res.created)
 })
 
 EventsOn("project-tree", (message) => {
+    appstate.project.tree = message
     logger.INFO("PROJECT EVENT", "events.js", "Project tree", message, null)
 })
 
-EventsOn("close-project", () => {
-    logger.INFO("PROJECT EVENT", "events.js", "Project Closed", message, null)
+/*======= FILE SERVICES ========*/
+
+EventsOn("file-created", (message) => {
+    emit(events.file.res.created)
+    logger.INFO("FILE EVENT", "events.js", "File Created", message, null)
 })
 
-
-
+EventsOn("file-opened", (message) => {
+    appstate.file.path = message
+    logger.INFO("FILE EVENT", "events.js", "File Opened", message, null)
+})
 

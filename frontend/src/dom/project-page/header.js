@@ -1,5 +1,14 @@
+import {events, emit, ON} from '/src/events/events.js'
+import { appstate } from '/src/appstate/appstate.js'
+import { libraryServices } from '/src/api/api.js'
+import {register, get} from '/src/appstate/skeleton.js'
 
-export function renderHeader(projectContainer) {
+
+
+export function renderHeader() {
+
+    const projectContainer = get("app", "projectContainer")
+
     //Header Container
     const header = document.createElement("header");
     header.classList.add("header");

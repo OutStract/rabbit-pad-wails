@@ -35,7 +35,6 @@ func (f *FileServices) CreateFile (ProjectPath string) {
 		count++
 		filePath = filepath.Join(ProjectPath, fmt.Sprintf("%d - untitled.md", count))
 
-
 	}
 
 	id, err := uuid.NewV7()
@@ -53,4 +52,26 @@ func (f *FileServices) CreateFile (ProjectPath string) {
 		LogInfo("[FileService]","Create File Process ended", filePath)
     }
 
+}
+
+func (f *FileServices) ReadFile (FilePath string) (string, error) {
+
+	content, err := os.ReadFile(FilePath)
+
+
+	if err != nil {
+		LogError("[FileServices]", "There was problem in opening the file", err)
+		return "", err
+	}
+
+	ReadContent := string(content)
+
+	message := FilePath
+	
+	if f.Ctx != nil {
+		runtime.EventsEmit(f.Ctx, "file-opened", message)
+		LogInfo("[FileService]","File reading Process ended", FilePath)
+    }
+
+	return ReadContent, nil
 }

@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 	"encoding/json"
+	"fmt"
 
 )
 
@@ -101,7 +102,7 @@ func (l *LibraryServices) LibTree(libRoot string) []LibraryTree {
 		LibTree = append(LibTree ,project)
 	}
 
-	LogSuccess("[LibraryServices]","Library Loaded")
+	LogSuccess("[LibraryServices]","Library Loaded", LibTree)
 
 	message := LibTree
 	if l.Ctx != nil {
@@ -187,7 +188,7 @@ func (l *LibraryServices) UpdateLibConfig (libPath, activeProject string) {
 		return
 	}
 
-	LogSuccess("[LibraryServices]", "Config file marshalled successfully")
+	LogSuccess("[LibraryServices]", "Config file marshalled successfully", updatedConfig)
 
 	// Write it back
 
@@ -200,10 +201,10 @@ func (l *LibraryServices) UpdateLibConfig (libPath, activeProject string) {
 
 	LogSuccess("[LibraryServices]","Config have been updated successfully", updatedConfig)
 
-	message := updatedConfig
+	message := fmt.Sprint(string(updatedConfig))
 	if l.Ctx != nil {
         runtime.EventsEmit(l.Ctx, "lib-config-update", message)
-		LogInfo("[LibraryServices]", "Config update event emitted successfully")
+		LogInfo("[LibraryServices]", "Config update event emitted successfully", message)
     }
 
 }
@@ -244,7 +245,7 @@ func (l *LibraryServices) LoadLibConfig (libPath string) (string, bool) {
 	message := ActiveProj.LastOpendProject
 	if l.Ctx != nil {
 		runtime.EventsEmit(l.Ctx, "lib-config-found", message)
-		LogInfo("[LibraryServices]","Config file data emitted")
+		LogInfo("[LibraryServices]","Config file data emitted", message)
     }
 	return ActiveProj.LastOpendProject, true
 

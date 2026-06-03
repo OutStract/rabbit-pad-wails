@@ -1,11 +1,13 @@
-import {events, emit} from '/src/events/events.js'
+import {events, emit, ON} from '/src/events/events.js'
 import { appstate } from '/src/appstate/appstate.js'
 import { libraryServices } from '/src/api/api.js'
-import {register, get} from '/src/appstate/skeleton.js'
+import {register, get, skeleton} from '/src/appstate/skeleton.js'
 
 
 
 export function renderLibraryTree() {
+    
+    console.log("libraryTreeContainer",skeleton.library.libraryTreeContainer)
     const libraryBody = get("library", "libraryBody")
     
     const libraryTreeContainer = document.createElement("div");
@@ -20,10 +22,8 @@ export function renderLibraryTree() {
 
 async function loadLibraryTree () {
 
-    const libRoot = appstate.library.path
-    const nodes = await libraryServices.LIB_TREE("main.js",libRoot)
     const container = get("library", "libraryTreeContainer")
-    container.replaceChildren()
+    console.log("Container", container)
 
     const newProjectBlock = document.createElement("div");
     newProjectBlock.id = "new-project-block"
@@ -35,7 +35,7 @@ async function loadLibraryTree () {
     newProjectBtn.textContent = "add_box";
 
     newProjectBtn.addEventListener("click", () => {
-        emit(events.NEW_PROJECT);
+        emit(events.project.req.create);
         
     })
 
@@ -43,6 +43,8 @@ async function loadLibraryTree () {
 
     container.append(newProjectBlock)
 
+    const libRoot = appstate.library.path
+    const nodes = await libraryServices.LIB_TREE("main.js",libRoot)
     nodes.forEach(node => {
 
         const libraryNode = document.createElement("div")
@@ -62,8 +64,9 @@ async function loadLibraryTree () {
             const projectPath = libraryNode.dataset.path;
             const libPath = appstate.library.path
 
-            await libraryServices.UPDATE_LIB_CONFIG(libPath, projectPath)
-            EventsEmit("open-project", projectPath);
+            await libraryServices.UPDATE_LIB_CONFIG("libraryTree.js",libPath, projectPath)
+            // appstate.project.path = projectPath
+            emit(events.project.req.open);
         })
 
         nodeImage.addEventListener("mouseleave", () => {
@@ -77,4 +80,47 @@ async function loadLibraryTree () {
         libraryNode.append(nodeImage, nodeName)
 
     })
+}
+
+ON(events.project.res.created, {callback: addNewProject})
+
+function addNewProject() {
+    const container = get("library", "libraryTreeContainer")
+
+    const newNodePath = appstate.project.newProjectPath
+    const nameExtractions = newNodePath.split(/[\\/]/);
+    const newNodeName = nameExtractions.pop()
+
+    const libraryNode = document.createElement("div")
+        libraryNode.id = "library-node";
+        libraryNode.dataset.path = newNodePath
+
+    container.append(libraryNode)
+
+
+        const nodeImage = document.createElement("span")
+        nodeImage.classList.add("material-symbols-outlined");
+        nodeImage.textContent = "folder";
+        nodeImage.classList.add("project-folder-icon")
+        nodeImage.addEventListener("mouseenter", () => {
+            nodeImage.textContent = "folder_open";
+        })
+        nodeImage.addEventListener("click", async () => {
+            const projectPath = libraryNode.dataset.path;
+            const libPath = appstate.library.path
+
+            await libraryServices.UPDATE_LIB_CONFIG("libraryTree.js",libPath, projectPath)
+            appstate.project.path = projectPath
+            emit(events.project.req.open);
+        })
+
+        nodeImage.addEventListener("mouseleave", () => {
+            nodeImage.textContent = "folder";
+        })
+
+        const nodeName = document.createElement("p")
+        nodeName.textContent = newNodeName
+        nodeName.classList.add("lib-project-name")
+
+        libraryNode.append(nodeImage, nodeName)
 }

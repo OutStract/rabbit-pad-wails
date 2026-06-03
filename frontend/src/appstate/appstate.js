@@ -17,6 +17,18 @@ export const appstate = {
         },
         {
             "tree" : null
+        },
+        {
+            "newProjectPath": null
+        }
+    ],
+    "file": [
+        {
+            "name": null,
+            "path": null,
+        },
+        {
+            "newFilePath": null
         }
     ]
 }

@@ -5,3 +5,7 @@
 export function CreateFile(arg1) {
   return window['go']['services']['FileServices']['CreateFile'](arg1);
 }
+
+export function ReadFile(arg1) {
+  return window['go']['services']['FileServices']['ReadFile'](arg1);
+}

@@ -1,7 +1,13 @@
 import {events, emit} from '/src/events/events.js'
+import { appstate } from '/src/appstate/appstate.js'
+import { libraryServices } from '/src/api/api.js'
+import {register, get} from '/src/appstate/skeleton.js'
+
+export function renderLeftToolBar() {
 
 
-export function renderLeftToolBar(containerLeft) {
+    const containerLeft = get("leftSide", "containerLeft")
+
     const toolBarBody = document.createElement("div")
     toolBarBody.classList.add("left-tool-bar")
     containerLeft.append(toolBarBody)
@@ -17,8 +23,7 @@ export function renderLeftToolBar(containerLeft) {
     libraryBtnIcon.classList.add("material-symbols-outlined")
     libraryBtnIcon.textContent = "library_books"
     libraryBtnIcon.addEventListener('click', () => {
-        EventsEmit("close-project");
-        console.log("Event Fired")
+        emit(events.project.req.close);
     })
     libraryBtn.append(libraryBtnIcon) 
     

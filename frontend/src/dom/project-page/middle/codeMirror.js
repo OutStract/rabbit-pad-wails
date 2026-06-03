@@ -1,3 +1,7 @@
+import { fileServices } from '/src/api/api.js'
+import { appstate } from '/src/appstate/appstate.js'
+
+
 import {EditorState, RangeSetBuilder, StateField} from "@codemirror/state"
 import {EditorView, keymap,highlightSpecialChars, drawSelection, Decoration} from "@codemirror/view"
 import {defaultKeymap, history, historyKeymap} from "@codemirror/commands"
@@ -202,8 +206,14 @@ const fortifyMetadataExtension = EditorState.transactionFilter.of((tr) => {
             ])
     ]
 
+
+
+
+    const fileContent = "no file "
+
+
     let state = EditorState.create({
-        doc: `chapterId:123456\n\n`, 
+        doc: fileContent, 
         extensions: editorExtentions
     })
 
@@ -211,6 +221,21 @@ const fortifyMetadataExtension = EditorState.transactionFilter.of((tr) => {
         state: state,
         parent: codeMirrorContainer
     })
-
     
 }
+
+    async function readFile() {
+        const filePath = appstate.file.path
+        if (!filePath) {
+            return "No File is opened"
+        }
+
+        console.log(filePath)
+
+        const content = await fileServices.READ_FILE("codemirror.js", filePath)
+
+        return content
+    }
+
+    console.log(readFile)
+

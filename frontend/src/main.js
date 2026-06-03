@@ -13,11 +13,13 @@ import { renderProjectContainer } from '/src/dom/project-page/projectContainer.j
 import { renderHeader } from '/src/dom/project-page/header.js';
 import { renderStartUp } from '/src/dom/startup'
 import { renderLibrary } from '/src/dom/library/libraryContainer'
+import { renderNewProject } from '/src/dom/library/newProjectContainer'
 
 import { EventsOn } from '../wailsjs/runtime/runtime';
 
 const app = document.getElementById("app");
 register("app","app",app)
+console.log("main", app)
 
 
 
@@ -37,7 +39,7 @@ async function startUpCheck() {
             return
         }
 
-        await renderProjectContainer(app, {onCreate: CreateFile});
+        renderProjectContainer();
 
 }
 

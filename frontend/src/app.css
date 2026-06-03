@@ -144,6 +144,11 @@ hr {
     position: relative;
 }
 
+#library-body {
+    flex: 1;
+    width: 100%;
+}
+
 #library-header{
     height: var(--header-height);
     width:100%;
@@ -284,7 +289,7 @@ hr {
     min-width: var(--tool-bar-min-w)
 }
 
-.project-title {
+/* .project-title {
     margin:0;
 }
 
@@ -296,17 +301,36 @@ hr {
 .project-container {
     flex: 1;
     margin: 0 var(--padding-min);
+    overflow: auto;
 }
 
 #project-nodes-container {
     padding-left: var(--padding-min);
+    
 }
 
 .tree-node {
     text-align:left;
     margin:0;
+} */
+
+.node-name{
+    margin: 0;
 }
 
+.node-cell {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+}
+
+.child-block {
+    margin-left: 6px;
+    padding-left: var(--padding-min);
+    border-left: var(--thread);
+}
 /*===================== Middle body project View =====================*/
 
 #middle-area {

@@ -13,17 +13,18 @@ export function register (block, name, element) {
     }
 
     if(skeleton[block][name]) {
-        console.warn(`Element already registerd: ${name}`)
+        console.log(`Overwriting : ${block}.${name}`)
     }
     
     skeleton[block][name] = element
-    console.log("Registrations successful", skeleton[block][name] = element)
 }
 
 export function get(block, name) {
     if(!skeleton[block]) {
         throw new Error(`Unknown block found ${block}`)
     }
+
+    console.log( name, "Registrations successful", "Conected?", skeleton[block][name]?.isConnected)
 
     return skeleton[block][name]
 }

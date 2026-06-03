@@ -1,12 +1,18 @@
+import {events, emit, ON} from '/src/events/events.js'
+import { appstate } from '/src/appstate/appstate.js'
+import { projectServices } from '/src/api/api.js'
+import {register, get} from '/src/appstate/skeleton.js'
+
+ON(events.project.req.create, {callback: renderNewProject})
 
 
-
-export async function renderNewProject(libraryContainer, makeProject) {
-
-    try {
-
+export async function renderNewProject() {
         const addProjectContainer = document.createElement("div")
         addProjectContainer.classList.add ("add-project-block")
+
+        const app = get("app", "app")
+
+        app.append(addProjectContainer)
 
         const addProjectHeader = document.createElement("div")
         addProjectHeader.id = "add-project-header"
@@ -24,9 +30,9 @@ export async function renderNewProject(libraryContainer, makeProject) {
         createProjBtn.id = "create-proj-btn"
         createProjBtn.addEventListener('click',async () => {
             const name = addProjectName.value
-            const path = appState.libraryPath
+            const path = appstate.library.path
             console.log(path, name)
-            await makeProject(path, name)
+            await projectServices.MAKE_PROJECT("newProjectContainer.js",path, name)
             addProjectContainer.remove()
         })
 
@@ -42,11 +48,8 @@ export async function renderNewProject(libraryContainer, makeProject) {
 
         addProjectHeader.append(removeProjectContainer)
 
+        const libraryContainer = get("library", "libraryContainer")
         libraryContainer.append(addProjectContainer)
 
         addProjectContainer.append(addProjectHeader, addProjectBody)
-
-    } catch(err) {
-        console.log(err)
-    }
 }
