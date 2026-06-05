@@ -10,7 +10,7 @@ export async function renderNewProject() {
         const addProjectContainer = document.createElement("div")
         addProjectContainer.classList.add ("add-project-block")
 
-        const app = get("app", "app")
+        const app = get("newProjectContainer.js","app", "app")
 
         app.append(addProjectContainer)
 
@@ -48,7 +48,7 @@ export async function renderNewProject() {
 
         addProjectHeader.append(removeProjectContainer)
 
-        const libraryContainer = get("library", "libraryContainer")
+        const libraryContainer = get("newProjectContainer.js","library", "libraryContainer")
         libraryContainer.append(addProjectContainer)
 
         addProjectContainer.append(addProjectHeader, addProjectBody)

@@ -8,7 +8,7 @@ import {register, get, skeleton} from '/src/appstate/skeleton.js'
 export function renderLibraryTree() {
     
     console.log("libraryTreeContainer",skeleton.library.libraryTreeContainer)
-    const libraryBody = get("library", "libraryBody")
+    const libraryBody = get("libraryTree.js","library", "libraryBody")
     
     const libraryTreeContainer = document.createElement("div");
     libraryTreeContainer.id = "library-tree-container"
@@ -22,7 +22,7 @@ export function renderLibraryTree() {
 
 async function loadLibraryTree () {
 
-    const container = get("library", "libraryTreeContainer")
+    const container = get("libraryTree.js function: loadLibraryTree","library", "libraryTreeContainer")
     console.log("Container", container)
 
     const newProjectBlock = document.createElement("div");
@@ -35,7 +35,11 @@ async function loadLibraryTree () {
     newProjectBtn.textContent = "add_box";
 
     newProjectBtn.addEventListener("click", () => {
-        emit(events.project.req.create);
+        const payload = {
+                    source: "libraryTree.js",
+                    data: null,
+        }
+        emit(events.project.req.create, payload);
         
     })
 
@@ -65,8 +69,11 @@ async function loadLibraryTree () {
             const libPath = appstate.library.path
 
             await libraryServices.UPDATE_LIB_CONFIG("libraryTree.js",libPath, projectPath)
-            // appstate.project.path = projectPath
-            emit(events.project.req.open);
+            const payload = {
+                    source: "libraryTree.js",
+                    data: null,
+                }
+            emit(events.project.req.open, payload);
         })
 
         nodeImage.addEventListener("mouseleave", () => {
@@ -85,7 +92,7 @@ async function loadLibraryTree () {
 ON(events.project.res.created, {callback: addNewProject})
 
 function addNewProject() {
-    const container = get("library", "libraryTreeContainer")
+    const container = get("libraryTree.js","library", "libraryTreeContainer")
 
     const newNodePath = appstate.project.newProjectPath
     const nameExtractions = newNodePath.split(/[\\/]/);
@@ -110,8 +117,11 @@ function addNewProject() {
             const libPath = appstate.library.path
 
             await libraryServices.UPDATE_LIB_CONFIG("libraryTree.js",libPath, projectPath)
-            appstate.project.path = projectPath
-            emit(events.project.req.open);
+            const payload = {
+                    source: "libraryTree.js",
+                    data: null,
+                }
+            emit(events.project.req.open, payload);
         })
 
         nodeImage.addEventListener("mouseleave", () => {

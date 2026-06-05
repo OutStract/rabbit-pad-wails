@@ -4,3 +4,5 @@
 export function CreateFile(arg1:string):Promise<void>;
 
 export function ReadFile(arg1:string):Promise<string>;
+
+export function WriteFile(arg1:string,arg2:string):Promise<void>;

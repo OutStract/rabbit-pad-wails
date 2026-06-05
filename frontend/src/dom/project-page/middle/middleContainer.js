@@ -7,7 +7,7 @@ import { codeMirror } from './codeMirror.js'
 
 export function renderMiddleArea() {
 
-    const homeBody = get("app", "projectBody")
+    const homeBody = get("middleContainer.js","app", "projectBody")
 
     const middleArea = document.createElement("div")
     middleArea.id = "middle-area"
@@ -15,8 +15,23 @@ export function renderMiddleArea() {
 
 
     const middleBody = document.createElement("div")
+    register("middle", "middleBody", middleBody)
     middleBody.id = 'middle-body'
     
     middleArea.append(middleBody)
-    codeMirror(middleBody)
+
+    if(!appstate.file.path) {
+        middleBody.textContent = "No File is opened"
+        return
+    }
+    
+}
+
+ON(events.file.req.editor, {callback: renderEditor})
+
+function renderEditor() {
+    const middleBody = get("middleContainer.js function", "middle" ,"middleBody")
+    middleBody.replaceChildren()
+    console.log("RENDERING CODE MIRROR WITH PATH", appstate.file.path)
+    codeMirror()
 }

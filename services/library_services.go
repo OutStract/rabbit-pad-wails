@@ -7,7 +7,7 @@ import (
 	"os"
 	"time"
 	"encoding/json"
-	"fmt"
+	// "fmt"
 
 )
 
@@ -201,7 +201,7 @@ func (l *LibraryServices) UpdateLibConfig (libPath, activeProject string) {
 
 	LogSuccess("[LibraryServices]","Config have been updated successfully", updatedConfig)
 
-	message := fmt.Sprint(string(updatedConfig))
+	message := activeProject
 	if l.Ctx != nil {
         runtime.EventsEmit(l.Ctx, "lib-config-update", message)
 		LogInfo("[LibraryServices]", "Config update event emitted successfully", message)

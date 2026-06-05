@@ -26,9 +26,10 @@ export const appstate = {
         {
             "name": null,
             "path": null,
+            "content": null
         },
         {
             "newFilePath": null
         }
-    ]
+    ],
 }

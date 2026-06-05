@@ -3,7 +3,7 @@ import {logger} from '/src/logs/logger.js'
 import { ConfigCheck, UpdateConfig  } from '../../wailsjs/go/services/StartUpServices.js';
 import { MakeLib, LibTree, LoadLibConfig, UpdateLibConfig } from '../../wailsjs/go/services/LibraryServices.js';
 import { MakeProject, ProjectTree } from '../../wailsjs/go/services/ProjectServices.js';
-import { CreateFile, ReadFile } from '../../wailsjs/go/services/FileServices.js';
+import { CreateFile, ReadFile, WriteFile } from '../../wailsjs/go/services/FileServices.js';
 
 // FROM FRONTEND TO BACKEND
 export const startUpServices = {
@@ -26,7 +26,8 @@ export const projectServices = {
 
 export const fileServices = {
     CREATE_FILE: createFile,
-    READ_FILE: readFile
+    READ_FILE: readFile,
+    SAVE_FILE: writeFile
 }
 /*======= START UP SERVICES ========*/
 
@@ -220,6 +221,33 @@ async function readFile (fileName, filePath) {
             success: false,
             data: err,
             message: "Unable to create file"
+        }
+    }
+}
+
+
+async function writeFile (fileName, content, filePath) {
+
+    const start = performance.now()
+    try{ 
+        logger.INFO("WRITE", fileName, "Saving file", null, performance.now() - start)
+
+        const result = await WriteFile(content, filePath)
+
+        logger.INFO("COMPLETED", fileName, "File is Saved", result, performance.now() - start)
+        return {
+            success: true,
+            data: result,
+            message: "File saved successfully"
+        }
+    }
+    catch(err) {
+        logger.ERROR(err)
+
+        return {
+            success: false,
+            data: err,
+            message: "Unable to save file"
         }
     }
 }

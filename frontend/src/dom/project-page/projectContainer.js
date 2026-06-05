@@ -15,7 +15,7 @@ ON(events.project.req.open, {callback: renderProjectContainer})
 
 export function renderProjectContainer() {
 
-        const app = get("app", "app")
+        const app = get("projectContainer.js","app", "app")
         console.log(app)
         app.innerHTML = ""
     

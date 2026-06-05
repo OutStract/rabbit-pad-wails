@@ -1,134 +1,185 @@
 import {events, emit, ON} from '/src/events/events.js'
 import {logger} from '/src/logs/logger.js'
 import {projectServices} from '/src/api/api.js'
-import {register, get} from '/src/appstate/skeleton.js'
+import {register, get, skeleton} from '/src/appstate/skeleton.js'
 import { appstate } from '/src/appstate/appstate.js'
 
 
 
 export async function renderProjectTree() {
 
-    const containerLeft = get("leftSide", "containerLeft")
+    const containerLeft = get("projectTree.js","leftSide", "fileContainer")
 
-        const projectName = appstate.project.name
-
-        // const projectTree = await onLoad(appState.activeProjectPath)
         //Project Tree Container
         const projectContainer = document.createElement("div");
         projectContainer.classList.add("project-container");
         
         //Appending to right side container
         containerLeft.appendChild(projectContainer);
-    
-        //Project Title
-        const projectTitle = document.createElement("h2");
-        projectTitle.textContent = projectName;
-        projectTitle.classList.add("project-title")
+
 
     
         //Project Nodes Container
         const projectNodesContainer = document.createElement("div");
-        register("leftSide", "projectNodesContainer", projectNodesContainer)
         projectNodesContainer.id = 'project-nodes-container'
+        register("leftSide", "projectNodesContainer", projectNodesContainer)
 
-        ON(events.file.res.created, {callback: libraryNodes})
 
         const nodes = await projectServices.PROJECT_TREE("projectTree.js" ,appstate.project.path)
-        const container = get("leftSide", "projectNodesContainer")
+
+        console.log("Appstate form project tree is:", appstate.project.tree)
+        console.log("Appstate form project tree is:", appstate.project.path)
+        console.log("Skeleton form project tree is:", skeleton)
+
     
-        newFileTree(nodes, container)
+        newFileTree(nodes, projectNodesContainer)
     
         //Appending to library container
-        projectContainer.append(projectTitle, projectNodesContainer);
+        projectContainer.append(projectNodesContainer);
 
 }
 
 
-async function libraryNodes(nodes, container) {
-    //So comment time because i am sure i will forget what i did
-    container.replaceChildren()
 
-    logger.INFO("DOM", "projectTree.js", "Rendering project tree", null)
-    nodes.forEach ( node => { // Simple taking the json file of all the folders and moveing them one by one in a loop
 
-        let folderIsOpen = false
-        
-        function openFolder() {
-            folderIsOpen = !folderIsOpen
-        }
-        const name = document.createElement("p")
-        name.textContent = node.name
-        name.classList.add ("tree-node")
-        name.dataset.filepath = node.path
-        container.append(name)  // This one was a pain to figure out, thing is
-        // When you append the parents at the end of the code then the children will be above the parents
-        //Because when you later scan for childrens with an if() and start recursion, the recursion will be finished first and then the code move forward to append the parent
-        //By appending the parents first at the start of the code we make sure that later when folders are being checked for childrens 
-        // They append after the parent
 
-        const childrenBlock = document.createElement("div") // This will be used as a storage space for all teh childrens
-        childrenBlock.classList.add ("children-block")
-
-        function removeFolderEvent (event) {
-            event.stopPropagation()
-            openFolder() // Making open folder true
-            const children = node.children
-
-            if (folderIsOpen) { 
-                if(node.children) {
-                    libraryNodes(children, childrenBlock)  // Starting the recursion, but this time passing the children storage we made before
-                }
-            } else {
-                childrenBlock.replaceChildren() // So if the folder closes this function will clear the storage space of children
-            }
-            console.log("func",folderIsOpen)
-        }
-
-        name.addEventListener("click", removeFolderEvent)
-
-            if (node.children) {
-            container.append(childrenBlock)  // This is a check to make sure only folders WITH children get the storage space, keeping the dom clean
-        }
-
-    })  
-}
 
 async function newFileTree(nodes, container) {
 
+
+    const selection = new Set();
+
     nodes.forEach(node => {
-        const body = document.createElement("div")
-        const cell = document.createElement("div")
+        let isOpen = false
+        function folderSwitch() {
+            isOpen = !isOpen
+        }
+
+        const treeCell = document.createElement("div")
+        const folderCell = document.createElement("div")
         const name = document.createElement("p")
-        const icon = document.createElement("div")
+        const cellIcon = document.createElement("span")
         const childBlock = document.createElement("div")
+        
+        treeCell.classList.add("node-cell")
+        folderCell.classList.add("folder-cell")
+        treeCell.dataset.name = node.name
+        folderCell.dataset.name = node.name
 
-        cell.classList.add("node-cell")
+        treeCell.draggable = "true"
+        treeCell.tabIndex = 0
+
         name.classList.add("node-name")
-        childBlock.classList.add("child-block")
-        childBlock.dataset.parent = node.name
+        cellIcon.classList.add("material-symbols-outlined", "cell-icon")
+        name.dataset.path = node.path
 
-        body.dataset.name = node.name
+
+        childBlock.classList.add("child-block")
+        childBlock.dataset.childrenOf = node.name
+
+
         if (node.children) {
-            body.dataset.hasChildren = true
+            folderCell.dataset.hasChildren = true
         }
 
         if(node.isFolder) {
             name.textContent = node.name
-            icon.textContent = "D"
-            cell.append(icon, name)
-            body.append(cell)
-
+            cellIcon.textContent = "folder"
+            treeCell.append(cellIcon, name)
+            folderCell.append(treeCell)
+            container.append(folderCell)
+            
             if(node.children) {
-                body.append(childBlock)
-                newFileTree(node.children, childBlock)
+                cellIcon.addEventListener('click', (event) => {
+                    event.stopPropagation()
+                    folderSwitch()
+                    if (isOpen) {
+                        folderCell.append(childBlock)
+                        newFileTree(node.children, childBlock)
+                    } else {
+                        childBlock.replaceChildren()
+                    }
+                })
             }
         } else {
             name.textContent = node.name
-            icon.textContent = "F"
-            cell.append(icon, name)
-            body.append(cell)
+            cellIcon.textContent = "description"
+            treeCell.append(cellIcon, name)
+            // treeCell.addEventListener('click', fileClick)
+            function fileClick(event) {
+                event.stopPropagation()
+                const activeFile = name.dataset.path
+                console.log("Path from projectTree.js is:", activeFile)
+                appstate.file.path = activeFile
+                const payload = {
+                    source: "projectTree.js",
+                    data: activeFile,
+                }
+                emit(events.file.req.editor, payload)
+                console.log("EVENTLISTENER", node.name)
+
+                emit(events.file.req.read, payload)
+                
+            }
+            
+            treeCell.removeEventListener('click', fileClick)
+            treeCell.addEventListener('click', fileClick)
+            container.append(treeCell)
         }
 
-        container.append(body)
     })
 }
+
+ON(events.file.res.created,{callback: appendNewFile})
+
+function appendNewFile() {
+
+    const container = get("projectTree", "leftSide", "projectNodesContainer")
+
+    // get new file path
+    const newFilePath = appstate.file.newFilePath
+
+    // extract name of the thing
+    const nameExtractions = newFilePath.split(/[\\/]/);
+    const newFileName = nameExtractions.pop()
+    
+    const node = {
+        name: newFileName,
+        path: newFilePath,
+    }
+
+
+    const treeCell = document.createElement("div")
+        const folderCell = document.createElement("div")
+        const name = document.createElement("p")
+        const cellIcon = document.createElement("span")
+        
+        treeCell.classList.add("node-cell")
+        folderCell.classList.add("folder-cell")
+        treeCell.dataset.name = node.name
+        folderCell.dataset.name = node.name
+
+
+        name.classList.add("node-name")
+        cellIcon.classList.add("material-symbols-outlined", "cell-icon")
+        name.dataset.path = node.path
+
+
+    name.textContent = node.name
+            cellIcon.textContent = "description"
+            treeCell.append(cellIcon, name)
+            name.addEventListener('click', (event) => {
+                event.stopPropagation()
+                const activeFile = name.dataset.path
+                console.log("Path from projectTree.js is:", activeFile)
+                appstate.file.path = activeFile
+                const payload = {
+                    source: "projectTree.js",
+                    data: activeFile,
+                }
+                emit(events.file.req.editor, payload)
+                emit(events.file.req.read, payload)
+            })
+            container.append(treeCell)
+}
+

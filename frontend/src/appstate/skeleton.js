@@ -19,12 +19,12 @@ export function register (block, name, element) {
     skeleton[block][name] = element
 }
 
-export function get(block, name) {
+export function get(file, block, name) {
     if(!skeleton[block]) {
         throw new Error(`Unknown block found ${block}`)
     }
 
-    console.log( name, "Registrations successful", "Conected?", skeleton[block][name]?.isConnected)
+    console.log( name, `"GET" successful for ${file}` , "Conected?", skeleton[block][name]?.isConnected)
 
     return skeleton[block][name]
 }

@@ -18,7 +18,8 @@ export const events = {
     }, 
     file: {
         req: {
-            read: "read-file"
+            read: "read-file",
+            editor: "render-editor"
         },
         res: {
             created: "new-file"
@@ -26,13 +27,13 @@ export const events = {
     }
 }
 
-export function emit(event) {
-    console.log("Event emitted", event)
-    EventsEmit(event)
+export function emit(event, payload) {
+    console.log("Event emitted", event, "from", payload.source)
+    EventsEmit(event, payload)
 }
 
 export function ON(event, {callback}) {
-    EventsOn(event, () => {
+    EventsOn(event,  () => {
         callback()
     })
 }
@@ -50,6 +51,15 @@ EventsOn("close-project", (message) => {
 EventsOn("new-project", (message) => {
     logger.INFO("PROJECT EVENT", "events.js", "Create Project", message, null)
 })
+
+// EventsOn("read-file", (payload) => {
+//     logger.INFO("FILE EVENT", "events.js", "read file", payload.data, null)
+// })
+
+// EventsOn(events.file.req.editor, (payload) => {
+//     logger.INFO("EDITOR EVENT", "events.js", "Render Editor", payload.data, null)
+// })
+
 
 /*======= START UP SERVICES ========*/
 
@@ -81,12 +91,16 @@ EventsOn("library-loaded", (message) => {
 })
 
 EventsOn("lib-config-found", (message) => {
+    const projectname = message.split(/[\\/]/);
+    appstate.project.name = projectname.pop()
     appstate.project.path = message
     logger.INFO("LIBRARY EVENT", "events.js", "Library config found", message, null)
 })
 
 EventsOn("lib-config-update", (message) => {
-    
+    const projectname = message.split(/[\\/]/);
+    appstate.project.name = projectname.pop()
+    appstate.project.path = message
     logger.INFO("LIBRARY EVENT", "events.js", "Library config update", message, null)
 })
 
@@ -95,7 +109,11 @@ EventsOn("lib-config-update", (message) => {
 EventsOn("project-created", (message) => {
     logger.INFO("PROJECT EVENT", "events.js", "Project Created", message, null)
     appstate.project.newProjectPath = message
-    emit(events.project.res.created)
+    const payload = {
+        source: "events.js",
+        data: null,
+    }
+    emit(events.project.res.created, payload)
 })
 
 EventsOn("project-tree", (message) => {
@@ -106,12 +124,20 @@ EventsOn("project-tree", (message) => {
 /*======= FILE SERVICES ========*/
 
 EventsOn("file-created", (message) => {
-    emit(events.file.res.created)
+    const payload = {
+        source: "events.js",
+        data: null,
+    }
+    appstate.file.newFilePath = message
+    emit(events.file.res.created, payload)
     logger.INFO("FILE EVENT", "events.js", "File Created", message, null)
 })
 
 EventsOn("file-opened", (message) => {
-    appstate.file.path = message
     logger.INFO("FILE EVENT", "events.js", "File Opened", message, null)
+})
+
+EventsOn("file-saved", (message) => {
+    logger.INFO("FILE EVENT", "events.js", "File Saved", message, null)
 })
 

@@ -6,7 +6,7 @@ import {register, get} from '/src/appstate/skeleton.js'
 export function renderLeftToolBar() {
 
 
-    const containerLeft = get("leftSide", "containerLeft")
+    const containerLeft = get( "leftToolBar.js","leftSide", "containerLeft")
 
     const toolBarBody = document.createElement("div")
     toolBarBody.classList.add("left-tool-bar")
@@ -23,7 +23,11 @@ export function renderLeftToolBar() {
     libraryBtnIcon.classList.add("material-symbols-outlined")
     libraryBtnIcon.textContent = "library_books"
     libraryBtnIcon.addEventListener('click', () => {
-        emit(events.project.req.close);
+        const payload = {
+                    source: "leftToolBar.js",
+                    data: null,
+                }
+        emit(events.project.req.close, payload);
     })
     libraryBtn.append(libraryBtnIcon) 
     

@@ -5,7 +5,7 @@ import { libraryServices } from '/src/api/api.js'
 
 export function renderRightSide() {
 
-    const homeBody = get("app", "projectBody")
+    const homeBody = get("containerRight.js","app", "projectBody")
 
     const containerRight = document.createElement("div");
     containerRight.classList.add("container-right");  

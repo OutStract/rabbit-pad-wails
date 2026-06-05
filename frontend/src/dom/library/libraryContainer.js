@@ -12,7 +12,7 @@ export async function renderLibrary() {
     const libPath = appstate.library.path
     await libraryServices.UPDATE_LIB_CONFIG("libraryContainer.js", libPath, "")
 
-    const app = get("app", "app")
+    const app = get( "libraryContainer.js" ,"app", "app")
 
     app.replaceChildren()
 

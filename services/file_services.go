@@ -18,7 +18,7 @@ type FileServices struct {
 func (f *FileServices) CreateFile (ProjectPath string) {
 	
 	count := 0
-	filePath := filepath.Join(ProjectPath, fmt.Sprintf("%d - untitled.md", count))
+	filePath := filepath.Join(ProjectPath, fmt.Sprintf("%d-untitled.md", count))
 
 
 	LogInfo("[FileService]", "Checking if the file exist")
@@ -33,7 +33,7 @@ func (f *FileServices) CreateFile (ProjectPath string) {
 		}
 		// LogError("[FileService]", "Filepath already exists", filePath)
 		count++
-		filePath = filepath.Join(ProjectPath, fmt.Sprintf("%d - untitled.md", count))
+		filePath = filepath.Join(ProjectPath, fmt.Sprintf("%d-untitled.md", count))
 
 	}
 
@@ -42,7 +42,7 @@ func (f *FileServices) CreateFile (ProjectPath string) {
 		LogError("[FileService]", "There is a problem in making the file ID")
 	}
 
-	data := []byte(fmt.Sprintf("<--!%s-->", id.String()))
+	data := []byte(fmt.Sprintf("<--!%s-->\n", id.String()))
 
 	err = os.WriteFile(filePath, data, 0644)
 
@@ -74,4 +74,32 @@ func (f *FileServices) ReadFile (FilePath string) (string, error) {
     }
 
 	return ReadContent, nil
+}
+
+func (f *FileServices) WriteFile(content, path string) {
+	//Make a temp path
+	TempPath := fmt.Sprintf("%s.temp",path)
+	OriginalPath := path
+	data := []byte(content)
+	// Write file in temp
+	err := os.WriteFile(TempPath, data, 0644)
+
+	if err != nil {
+		LogError("[FileServices]", "There was problem in saving the temp file", err)
+		return 
+	}
+	//rename temp
+
+	err = os.Rename(TempPath, OriginalPath)
+	if err != nil {
+		LogError("[FileServices]", "There was problem in saving the file", err)
+		return
+	}
+	
+	message := OriginalPath
+	if f.Ctx != nil {
+		runtime.EventsEmit(f.Ctx, "file-saved", message)
+		LogInfo("[FileService]","File saved successfully", message)
+    }
+
 }

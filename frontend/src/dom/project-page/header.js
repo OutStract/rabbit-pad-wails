@@ -7,7 +7,7 @@ import {register, get} from '/src/appstate/skeleton.js'
 
 export function renderHeader() {
 
-    const projectContainer = get("app", "projectContainer")
+    const projectContainer = get("header.js","app", "projectContainer")
 
     //Header Container
     const header = document.createElement("header");
