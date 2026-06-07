@@ -328,6 +328,13 @@ hr {
     padding-left: var(--padding-min);
     border-left: var(--thread);
 }
+
+
+.tree-cell-selected {
+    border: solid;
+}
+
+
 /*===================== Middle body project View =====================*/
 
 #middle-area {

@@ -48,12 +48,89 @@ async function newFileTree(nodes, container) {
 
 
     const selection = new Set();
+    let lastClickedCell = null;
 
     nodes.forEach(node => {
         let isOpen = false
         function folderSwitch() {
             isOpen = !isOpen
         }
+
+
+        function treeSelection(event) {
+
+        const rootTreeContainer = get("projectTree.js", "leftSide", "projectNodesContainer")
+
+            // Case 1 Shift selection
+        if (event.shiftKey) {
+            // Get the cell that user clicked with shift
+            if(!lastClickedCell) {
+                lastClickedCell = treeCell
+            }
+
+            // Make an array of all the cell in the contianer with the .node-cell class
+            const allCells = Array.from(rootTreeContainer.querySelectorAll(".node-cell"));
+
+            // Find the index of the first cell user slected
+            const startIdx = allCells.indexOf(lastClickedCell)
+
+            // Make a const with the last clicked element from the user
+            const endClicked = treeCell
+            const endIdx = allCells.indexOf(endClicked)
+
+            // Find which clicked cell has the smaller and bigger index number
+            const minIdx = Math.min(startIdx, endIdx);
+            const maxIdx = Math.max(startIdx, endIdx);
+
+            // Clean the tree of previous cells
+            rootTreeContainer.querySelectorAll('.tree-cell-selected').forEach(el => {
+                el.classList.remove('tree-cell-selected')
+            })
+            
+            // Loop through each element in the array 
+            for(let i = minIdx ; i <= maxIdx ; i++) {
+                const currentCell = allCells[i]
+                // FInd the element in the dom
+                const path = currentCell.querySelector('.node-name')?.dataset.path;
+
+                if(path) {
+                    selection.add(path)
+                    currentCell.classList.add("tree-cell-selected");
+                }
+            }
+            console.log("SHIFT SELECTION",selection)
+
+
+        } 
+        // CASE 2 ctrl select
+        else if (event.ctrlKey) {
+            if(selection.has(node.path)) {
+                selection.delete(node.path)
+                treeCell.classList.remove("tree-cell-selected")
+
+            } else {
+                selection.add(node.path)
+                treeCell.classList.add("tree-cell-selected")
+                lastClickedCell = treeCell
+            }
+            console.log("CTRL SELECTION",selection)
+        
+        } 
+        // CASE 3 Single selection
+        else {
+            selection.clear()
+            rootTreeContainer.querySelectorAll('.tree-cell-selected').forEach(el => {
+                el.classList.remove('tree-cell-selected')
+            })
+            selection.add(node.path)
+            treeCell.classList.add("tree-cell-selected")
+            lastClickedCell = treeCell
+            console.log("REGUALR SELECTION",selection)
+
+        }
+    }
+
+        
 
         const treeCell = document.createElement("div")
         const folderCell = document.createElement("div")
@@ -65,13 +142,52 @@ async function newFileTree(nodes, container) {
         folderCell.classList.add("folder-cell")
         treeCell.dataset.name = node.name
         folderCell.dataset.name = node.name
+        treeCell.dataset.isFolder = node.isFolder
 
-        treeCell.draggable = "true"
+        folderCell.dataset.path = node.path
+        treeCell.dataset.path = node.path
+
+
+        
+
+        treeCell.draggable = true
         treeCell.tabIndex = 0
+        treeCell.addEventListener('click', treeSelection)
+        treeCell.addEventListener('dragstart', () => {
+            console.log("STARTING DRAG")
+            event.dataTransfer.setData("text/plain", selection)
+            event.dataTransfer.effectAllowed = "move";
+            if(!selection.has(node.path)) {
+                selection.add(node.path)
+                console.log(selection)
+                treeCell.classList.add("tree-cell-selected")
+            }
+        })
 
+        treeCell.addEventListener('dragover', (event) => {
+            event.preventDefault()
+        })
+
+        treeCell.addEventListener('drop', (event) => {
+            event.preventDefault(); // Prevent browser from opening the file/link
+            event.stopPropagation(); // Stop it from bubbling up to parent folders
+            console.log("DROP")
+                const dropPath = event.currentTarget.dataset
+
+                if(dropPath.isFolder === "true") {
+                    selection.forEach(oldPath => {
+                        console.log("DESTINATION",dropPath.path, "Original",  oldPath)
+    
+                    })
+
+                }
+        })
+
+        
+        
+        name.dataset.path = node.path
         name.classList.add("node-name")
         cellIcon.classList.add("material-symbols-outlined", "cell-icon")
-        name.dataset.path = node.path
 
 
         childBlock.classList.add("child-block")
