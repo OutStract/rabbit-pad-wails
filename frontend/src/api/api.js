@@ -3,7 +3,7 @@ import {logger} from '/src/logs/logger.js'
 import { ConfigCheck, UpdateConfig  } from '../../wailsjs/go/services/StartUpServices.js';
 import { MakeLib, LibTree, LoadLibConfig, UpdateLibConfig } from '../../wailsjs/go/services/LibraryServices.js';
 import { MakeProject, ProjectTree } from '../../wailsjs/go/services/ProjectServices.js';
-import { CreateFile, ReadFile, WriteFile } from '../../wailsjs/go/services/FileServices.js';
+import { CreateFile, ReadFile, WriteFile, MoveFile } from '../../wailsjs/go/services/FileServices.js';
 
 // FROM FRONTEND TO BACKEND
 export const startUpServices = {
@@ -27,7 +27,8 @@ export const projectServices = {
 export const fileServices = {
     CREATE_FILE: createFile,
     READ_FILE: readFile,
-    SAVE_FILE: writeFile
+    SAVE_FILE: writeFile,
+    MOVE_FILE: moveFile
 }
 /*======= START UP SERVICES ========*/
 
@@ -248,6 +249,32 @@ async function writeFile (fileName, content, filePath) {
             success: false,
             data: err,
             message: "Unable to save file"
+        }
+    }
+}
+
+async function moveFile (fileName, destination, source, name) {
+
+    const start = performance.now()
+    try{ 
+        logger.INFO("MOVE", fileName, "Moving file", null, performance.now() - start)
+
+        const result = await MoveFile(destination, source, name)
+
+        logger.INFO("COMPLETED", fileName, "File is Moved", result, performance.now() - start)
+        return {
+            success: true,
+            data: result,
+            message: "File moved successfully"
+        }
+    }
+    catch(err) {
+        logger.ERROR(err)
+
+        return {
+            success: false,
+            data: err,
+            message: "Unable to move file"
         }
     }
 }

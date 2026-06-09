@@ -1,4 +1,4 @@
-import '/src/events/events.js'
+import {events, ON} from '/src/events/events.js'
 
 import './style.css';
 import './app.css';
@@ -14,8 +14,6 @@ import { renderHeader } from '/src/dom/project-page/header.js';
 import { renderStartUp } from '/src/dom/startup'
 import { renderLibrary } from '/src/dom/library/libraryContainer'
 import { renderNewProject } from '/src/dom/library/newProjectContainer'
-
-import { EventsOn } from '../wailsjs/runtime/runtime';
 
 const app = document.getElementById("app");
 register("app","app",app)
@@ -49,6 +47,4 @@ startUpCheck()
 
 /*========= EVENTS ===========*/
 
-
-
-
+ON(events.app.reload, {callback: startUpCheck})

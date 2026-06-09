@@ -22,7 +22,8 @@ export const events = {
             editor: "render-editor"
         },
         res: {
-            created: "new-file"
+            created: "new-file",
+            moved: "file-moved"
         }
     }
 }
@@ -139,5 +140,9 @@ EventsOn("file-opened", (message) => {
 
 EventsOn("file-saved", (message) => {
     logger.INFO("FILE EVENT", "events.js", "File Saved", message, null)
+})
+
+EventsOn("file-moved", (message) => {
+    logger.INFO("FILE EVENT", "events.js", "File moved", message, null)
 })
 

@@ -1,11 +1,13 @@
 
 import {startUpServices, libraryServices} from '/src/api/api.js'
 import { get, skeleton } from '/src/appstate/skeleton.js'
+import {events, emit} from '/src/events/events.js'
+
 
 import { OpenDirectory } from '../../wailsjs/go/services/DialogServices.js';
 
 export function renderStartUp () {
-    const app = get("app", "app")
+    const app = get("startup.js","app", "app")
     //Welcome container
     const welcome = document.createElement("div");
     welcome.id = "welcome"
@@ -116,6 +118,7 @@ export function renderStartUp () {
             }
             await startUpServices.UPDATE_CONFIG("startup.js",libName, libPath)
             await libraryServices.MAKE_LIB("startup.js",libName, libPath)
+            emit(events.app.reload, null)
         })
         libraryCreate.append(msg3, libraryCreateBtn);
         

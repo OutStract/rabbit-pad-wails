@@ -103,3 +103,31 @@ func (f *FileServices) WriteFile(content, path string) {
     }
 
 }
+
+func (f *FileServices) MoveFile (destination, source, name string) {
+
+	dest := destination
+	src := source
+	
+	destinationPath := filepath.Join(dest, name)
+
+	_, err := os.Stat(destinationPath) 
+
+	if err == nil {
+		LogError("[FileServices]", "File already exist in the destination path", err)
+		return
+	}
+
+	err = os.Rename(src, destinationPath)
+	if err != nil {
+		LogError("[FileServices]", "There was problem in moving the file", err)
+		return
+	}
+
+	message := dest
+	if f.Ctx != nil {
+		runtime.EventsEmit(f.Ctx, "file-moved", message)
+		LogInfo("[FileService]","File moved successfully", message)
+    }
+
+}
