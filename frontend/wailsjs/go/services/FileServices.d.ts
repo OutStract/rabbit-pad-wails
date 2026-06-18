@@ -3,6 +3,8 @@
 
 export function CreateFile(arg1:string):Promise<void>;
 
+export function DeleteFile(arg1:string,arg2:string,arg3:string):Promise<string>;
+
 export function MoveFile(arg1:string,arg2:string,arg3:string):Promise<void>;
 
 export function ReadFile(arg1:string):Promise<string>;

@@ -16,6 +16,7 @@ func (p *ProjectServices) MakeProject (libPath, projectName string) {
 	// Check for existing file
 	systemFolder := filepath.Join(projectPath, "system")
 	userFolder := filepath.Join(projectPath, "user")
+	trashFolder := filepath.Join(projectPath, ".trash")
 
 	err := os.MkdirAll(systemFolder, 0755)
 			if err != nil {
@@ -30,6 +31,13 @@ func (p *ProjectServices) MakeProject (libPath, projectName string) {
 			return
 		}
 	LogSuccess("[ProjectServices]", "The user folder has been made successfully")
+
+	err = os.MkdirAll(trashFolder, 0755)
+			if err != nil {
+			LogError("[ProjectServices]","There was a problem in creating the trash folder:", err)
+			return
+		}
+	LogSuccess("[ProjectServices]", "The trash folder has been made successfully")
 
 	message := projectPath
 	if p.Ctx != nil {
@@ -57,6 +65,11 @@ func (p *ProjectServices) ProjectTree (projectRoot string) []ProjectNode  {
 
 	for _,entry := range projectNodes {
 		fullPath := filepath.Join(projectRoot, entry.Name())
+
+		if entry.Name()[0] == '.' {
+        LogAlerts("[ProjectServices]","This is a hidden file, skipping...", entry.Name())
+        continue
+    	}
 
 		if entry.IsDir() {
 			node := ProjectNode {

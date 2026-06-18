@@ -277,6 +277,11 @@ hr {
 
 /*===================== Left Side Project View =====================*/
 
+.left-header-btn {
+    display: flex;
+    justify-content: center;
+}
+
 .container-left{
     display:flex;
     flex-direction: row-reverse;

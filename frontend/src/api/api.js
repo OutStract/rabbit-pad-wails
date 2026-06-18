@@ -3,7 +3,7 @@ import {logger} from '/src/logs/logger.js'
 import { ConfigCheck, UpdateConfig  } from '../../wailsjs/go/services/StartUpServices.js';
 import { MakeLib, LibTree, LoadLibConfig, UpdateLibConfig } from '../../wailsjs/go/services/LibraryServices.js';
 import { MakeProject, ProjectTree } from '../../wailsjs/go/services/ProjectServices.js';
-import { CreateFile, ReadFile, WriteFile, MoveFile } from '../../wailsjs/go/services/FileServices.js';
+import { CreateFile, ReadFile, WriteFile, MoveFile, DeleteFile } from '../../wailsjs/go/services/FileServices.js';
 
 // FROM FRONTEND TO BACKEND
 export const startUpServices = {
@@ -28,7 +28,8 @@ export const fileServices = {
     CREATE_FILE: createFile,
     READ_FILE: readFile,
     SAVE_FILE: writeFile,
-    MOVE_FILE: moveFile
+    MOVE_FILE: moveFile,
+    DELETE_FILE: deleteFile
 }
 /*======= START UP SERVICES ========*/
 
@@ -275,6 +276,32 @@ async function moveFile (fileName, destination, source, name) {
             success: false,
             data: err,
             message: "Unable to move file"
+        }
+    }
+}
+
+async function deleteFile (fileName, projectPath, filePath, activeFileName) {
+
+    const start = performance.now()
+    try{ 
+        logger.INFO("MOVE", fileName, "Moving file", null, performance.now() - start)
+
+        const result = await DeleteFile(projectPath, filePath, activeFileName)
+
+        logger.INFO("COMPLETED", fileName, "File is deleted", result, performance.now() - start)
+        return {
+            success: true,
+            data: result,
+            message: "File deleted successfully"
+        }
+    }
+    catch(err) {
+        logger.ERROR(err)
+
+        return {
+            success: false,
+            data: err,
+            message: "Unable to delete file"
         }
     }
 }

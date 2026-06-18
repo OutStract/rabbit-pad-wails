@@ -16,7 +16,7 @@ export const appstate = {
             "path": null,
         },
         {
-            "tree" : null
+            "isOpen" : null
         },
         {
             "newProjectPath": null
@@ -30,6 +30,9 @@ export const appstate = {
         },
         {
             "newFilePath": null
+        },
+        {
+            "selectionList": null
         }
     ],
 }

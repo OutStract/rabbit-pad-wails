@@ -24,7 +24,6 @@ func (l *LibraryServices) MakeLib(name, path string) {
 		librarypath := filepath.Join(path, name)
 		rabbitFolder := filepath.Join(librarypath, ".rabbitpad")
 		trashFolder := filepath.Join(librarypath, ".trash")
-		starterFolder := filepath.Join(librarypath, "Starter Folder")
 
 		err := os.MkdirAll(rabbitFolder, 0755)
 			if err != nil {
@@ -35,12 +34,6 @@ func (l *LibraryServices) MakeLib(name, path string) {
 		err = os.MkdirAll(trashFolder, 0755)
 			if err != nil {
 			LogError("[LibraryServices]","There was a problem in creating the .trash folder:", err)
-			return
-		}
-
-		err = os.MkdirAll(starterFolder, 0755)
-			if err != nil {
-			LogError("[LibraryServices]","There was a problem in creating the Starter Folder folder:", err)
 			return
 		}
 

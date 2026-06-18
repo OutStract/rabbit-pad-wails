@@ -58,11 +58,14 @@ async function wrapper() {
 
 
 const selection = new Set();
+const openFolder = new Set();
+appstate.selectionList = selection
+appstate.project.isOpen = openFolder
 // So there was a problem where this being inside the function made multiple instances of this
 // with every recursion, making cross folder movement impossible, because when you moved the file out of the folder
 // It started refrencing the selection of that other folder and with other folder having empty selection it 
 // Cancelld the file movement, to fix it we made selection a global variable
-// Now regardless of amount of recoursions, the dragging will always reference the correct set of data
+// Now regardless of amount of recoursions, the dragging will always reference the correct set of data 
 let lastClickedCell = null;
 
 
@@ -254,6 +257,7 @@ async function newFileTree(nodes, container) {
                     folderSwitch()
                     if (isOpen) {
                         folderCell.append(childBlock)
+                        
                         newFileTree(node.children, childBlock)
                     } else {
                         childBlock.replaceChildren()

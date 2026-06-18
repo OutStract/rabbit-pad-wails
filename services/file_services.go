@@ -24,9 +24,7 @@ func (f *FileServices) CreateFile (ProjectPath string) {
 	LogInfo("[FileService]", "Checking if the file exist")
 
 	for {
-
 		_, err := os.Stat(filePath) 
-
 		if err != nil {
 			LogAlerts("[FileService]", "Found a available path", filePath)
 			break
@@ -34,7 +32,6 @@ func (f *FileServices) CreateFile (ProjectPath string) {
 		// LogError("[FileService]", "Filepath already exists", filePath)
 		count++
 		filePath = filepath.Join(ProjectPath, fmt.Sprintf("%d-untitled.md", count))
-
 	}
 
 	id, err := uuid.NewV7()
@@ -130,4 +127,38 @@ func (f *FileServices) MoveFile (destination, source, name string) {
 		LogInfo("[FileService]","File moved successfully", message)
     }
 
+}
+
+func (f *FileServices) DeleteFile (ProjectPath, FilePath, FileName string) (string, error) {
+	// Take the file name and make the delete path
+	LogInfo("[FileService]","File deleted successfully", FilePath)
+	count := 0
+	TrashLoc := filepath.Join(ProjectPath, ".trash")
+	destination := filepath.Join(TrashLoc, fmt.Sprintf("%d-%s", count, FileName))
+	// Check if that file already exist in the delete folder
+	// if exist then add a number on it
+	for {
+		_, err := os.Stat(destination) 
+		if err != nil {
+			LogAlerts("[FileService]", "Found a available path", destination)
+			break
+		}
+		// LogError("[FileService]", "Filepath already exists", filePath)
+		count++
+		destination = filepath.Join(TrashLoc, fmt.Sprintf("%d-%s", count, FileName))
+	}
+
+	err := os.Rename(FilePath, destination)
+	if err != nil {
+		LogError("[FileServices]", "There was problem in deleted the file", err)
+		return "",err
+	}
+
+	message := destination
+	if f.Ctx != nil {
+		runtime.EventsEmit(f.Ctx, "file-deleted", message)
+		LogInfo("[FileService]","File deleted successfully", message)
+    }
+
+	return message,nil
 }

@@ -6,6 +6,9 @@ import {register, get} from '/src/appstate/skeleton.js'
 
 export async function renderLeftHeader () {
 
+    const selection = appstate.selectionList
+    const projectPath = appstate.project.path
+
     const containerLeft = get("leftHeader", "leftSide", "fileContainer")
 
         const leftHeaderBody = document.createElement("div")
@@ -29,8 +32,25 @@ export async function renderLeftHeader () {
                 await fileServices.CREATE_FILE("leftHeader.js",appstate.project.path)
             })
             newFileBtn.append(newFileBtnIcon)
+        
+        const deleteFileBtn = document.createElement("div")
+            const deleteFileBtnIcon = document.createElement("span")
+            deleteFileBtnIcon.classList.add("material-symbols-outlined")
+            deleteFileBtnIcon.textContent = "delete"
+            deleteFileBtnIcon.addEventListener('click', async () => {
+                for(const oldPath of selection) {
+                        const sourceSplit = oldPath.split("/")
+                        const sourceName = sourceSplit.pop()
+                        await fileServices.DELETE_FILE("projectTree.js", projectPath, oldPath, sourceName)
+                        console.log("Original" ,oldPath)
+                        
+                        console.log("SOURCE NAME", sourceName)
 
-            leftHeaderBtn.append(newFileBtn)
+                    }
+            })
+            deleteFileBtn.append(deleteFileBtnIcon)
+
+            leftHeaderBtn.append(newFileBtn, deleteFileBtn)
     
             containerLeft.append(leftHeaderBody)
     
