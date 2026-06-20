@@ -16,9 +16,6 @@ export const appstate = {
             "path": null,
         },
         {
-            "isOpen" : null
-        },
-        {
             "newProjectPath": null
         }
     ],

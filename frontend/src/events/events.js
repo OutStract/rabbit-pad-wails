@@ -23,7 +23,8 @@ export const events = {
         },
         res: {
             created: "new-file",
-            moved: "file-moved"
+            moved: "file-moved",
+            deleted: "file-deleted"
         }
     }
 }
@@ -146,3 +147,6 @@ EventsOn("file-moved", (message) => {
     logger.INFO("FILE EVENT", "events.js", "File moved", message, null)
 })
 
+EventsOn("file-deleted", (message) => {
+    logger.INFO("FILE EVENT", "events.js", "File deleted", message, null)
+})

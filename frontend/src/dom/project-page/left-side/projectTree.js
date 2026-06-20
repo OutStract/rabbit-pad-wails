@@ -46,6 +46,9 @@ export async function renderProjectTree() {
 
 ON(events.file.res.created,{callback: wrapper})
 ON(events.file.res.moved,{callback: wrapper})
+ON(events.file.res.deleted,{callback: wrapper})
+
+
 
 
 async function wrapper() {
@@ -60,7 +63,7 @@ async function wrapper() {
 const selection = new Set();
 const openFolder = new Set();
 appstate.selectionList = selection
-appstate.project.isOpen = openFolder
+
 // So there was a problem where this being inside the function made multiple instances of this
 // with every recursion, making cross folder movement impossible, because when you moved the file out of the folder
 // It started refrencing the selection of that other folder and with other folder having empty selection it 
@@ -74,19 +77,14 @@ async function newFileTree(nodes, container) {
     container.replaceChildren()
 
     nodes.forEach(node => {
-        let isOpen = false
-        function folderSwitch() {
-            isOpen = !isOpen
-        }
+        
+
+
+        
 
         const rootTreeContainer = get("projectTree.js", "leftSide", "projectNodesContainer")
 
         function treeSelection(event) {
-
-            // if (selection.has(currentPath) && !event.ctrlKey && !event.shiftKey) {
-            //         // Leave the selection completely intact so dragstart can read it.
-            //         return; 
-            // }
 
 
             // Case 1 Shift selection
@@ -153,7 +151,7 @@ async function newFileTree(nodes, container) {
             selection.add(node.path)
             treeCell.classList.add("tree-cell-selected")
             lastClickedCell = treeCell
-            console.log("REGUALR SELECTION",selection)
+            console.log("REGULAR SELECTION",selection)
 
         }
     }
@@ -239,6 +237,14 @@ async function newFileTree(nodes, container) {
         childBlock.classList.add("child-block")
         childBlock.dataset.childrenOf = node.name
 
+        let isOpen = JSON.parse(localStorage.getItem(node.path))
+        function folderSwitch() {
+            isOpen = !isOpen
+            localStorage.setItem(node.path, isOpen)
+        }
+        
+
+
 
         if (node.children) {
             folderCell.dataset.hasChildren = true
@@ -250,11 +256,17 @@ async function newFileTree(nodes, container) {
             treeCell.append(cellIcon, name)
             folderCell.append(treeCell)
             container.append(folderCell)
+        
             
             if(node.children) {
+                if (isOpen) {
+                        folderCell.append(childBlock)
+                        newFileTree(node.children, childBlock)
+                    }
                 cellIcon.addEventListener('click', (event) => {
                     event.stopPropagation()
                     folderSwitch()
+                    console.log("IS OPEN", isOpen)
                     if (isOpen) {
                         folderCell.append(childBlock)
                         
