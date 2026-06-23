@@ -372,7 +372,7 @@ function renameFile() {
 
     // Getting the cell from file path
     const rootTreeContainer = get("projectTree.js", "leftSide", "projectNodesContainer")
-    const renamingCell = rootTreeContainer.querySelector(`[data-path = "${lastFilePath}"]`)
+    const renamingCell = rootTreeContainer.querySelector(`[data-path = "${CSS.escape(lastFilePath)}"]`)
     console.log("LAST SELECTED CELL IS ", renamingCell)
     event.preventDefault(); 
 
@@ -471,12 +471,12 @@ function renameFile() {
             if(!fileObject.isFolder) {
                 newName = `${nameInput.value}.md`
             }
-            console.log(newNamePath)
+            console.log(newName)
             renamingCell.classList.remove('invalid-name')
 
             console.log(newName)
                 
-            //fileServices.RENAME_FILE("projectTree.js", lastFilePath, fileParent, newName )
+            fileServices.RENAME_FILE("projectTree.js", lastFilePath, fileParent, newName )
                 renamingCell.removeChild(nameInput)
                 renamingCell.append(nodeName)
                 // nodeName.textContent = nameInput.value 
