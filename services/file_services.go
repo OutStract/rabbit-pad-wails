@@ -163,9 +163,10 @@ func (f *FileServices) DeleteFile (ProjectPath, FilePath, FileName string) (stri
 	return message,nil
 }
 
-func (f *FileServices) RenameFile (OldNamePath, NewNamePath string) {
+func (f *FileServices) RenameFile (OldNamePath, BasePath, NewName string) {
+	NewNamePath := filepath.Join(BasePath, NewName)
 	_,err := os.Stat(NewNamePath)
-	LogAlerts("[FileService]","File renaing")
+	LogAlerts("[FileService]","File renaming")
 
 	if err == nil {
 		LogAlerts("[FileServices]","File with the name already exist", err)

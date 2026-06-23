@@ -42,7 +42,7 @@ export async function renderProjectTree() {
                     
                     for(const oldPath of selection) {
                         console.log("CHECKED")
-                        const sourceSplit = oldPath.split("/")
+                        const sourceSplit = oldPath.split(/[\\/]/)
                         const sourceName = sourceSplit.pop()
                         await fileServices.MOVE_FILE("projectTree.js", dropPath.path, oldPath, sourceName)
                         console.log("DESTINATION",dropPath.path, "Original",  oldPath)
@@ -257,7 +257,7 @@ async function newFileTree(nodes, container) {
                     
                     for(const oldPath of selection) {
                         console.log("CHECKED")
-                        const sourceSplit = oldPath.split("/")
+                        const sourceSplit = oldPath.split(/[\\/]/)
                         const sourceName = sourceSplit.pop()
                         await fileServices.MOVE_FILE("projectTree.js", dropPath.path, oldPath, sourceName)
                         console.log("DESTINATION",dropPath.path, "Original",  oldPath)
@@ -467,14 +467,16 @@ function renameFile() {
                 return
             }
     
-            let newNamePath = `${fileParent}/${nameInput.value}`
+            let newName = `${nameInput.value}`
             if(!fileObject.isFolder) {
-                newNamePath = `${fileParent}/${nameInput.value}.md`
+                newName = `${nameInput.value}.md`
             }
             console.log(newNamePath)
             renamingCell.classList.remove('invalid-name')
+
+            console.log(newName)
                 
-            fileServices.RENAME_FILE("projectTree.js", lastFilePath, newNamePath )
+            //fileServices.RENAME_FILE("projectTree.js", lastFilePath, fileParent, newName )
                 renamingCell.removeChild(nameInput)
                 renamingCell.append(nodeName)
                 // nodeName.textContent = nameInput.value 

@@ -307,13 +307,13 @@ async function deleteFile (fileName, projectPath, filePath, activeFileName) {
     }
 }
 
-async function renameFile (fileName, oldNamePath, newNamePath ) {
+async function renameFile (fileName, oldNamePath, basePath, newName ) {
 
     const start = performance.now()
     try{ 
         logger.INFO("RENAME", fileName, "Renaming file", null, performance.now() - start)
 
-        const result = await RenameFile(oldNamePath, newNamePath)
+        const result = await RenameFile(oldNamePath, basePath, newName)
 
         logger.INFO("COMPLETED", fileName, "File is renamed", result, performance.now() - start)
         return {
