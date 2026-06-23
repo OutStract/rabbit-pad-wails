@@ -238,7 +238,7 @@ async function readFile() {
         selection: {anchor: offset},
         effects: EditorView.scrollIntoView(offset, { y: "center"})
     })
-    view.focus()
+    // view.focus()
 }
 
 

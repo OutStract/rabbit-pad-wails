@@ -18,6 +18,10 @@ export function ReadFile(arg1) {
   return window['go']['services']['FileServices']['ReadFile'](arg1);
 }
 
+export function RenameFile(arg1, arg2) {
+  return window['go']['services']['FileServices']['RenameFile'](arg1, arg2);
+}
+
 export function WriteFile(arg1, arg2) {
   return window['go']['services']['FileServices']['WriteFile'](arg1, arg2);
 }

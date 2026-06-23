@@ -9,4 +9,6 @@ export function MoveFile(arg1:string,arg2:string,arg3:string):Promise<void>;
 
 export function ReadFile(arg1:string):Promise<string>;
 
+export function RenameFile(arg1:string,arg2:string):Promise<void>;
+
 export function WriteFile(arg1:string,arg2:string):Promise<void>;

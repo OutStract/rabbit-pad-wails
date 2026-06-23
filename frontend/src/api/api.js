@@ -3,7 +3,7 @@ import {logger} from '/src/logs/logger.js'
 import { ConfigCheck, UpdateConfig  } from '../../wailsjs/go/services/StartUpServices.js';
 import { MakeLib, LibTree, LoadLibConfig, UpdateLibConfig } from '../../wailsjs/go/services/LibraryServices.js';
 import { MakeProject, ProjectTree } from '../../wailsjs/go/services/ProjectServices.js';
-import { CreateFile, ReadFile, WriteFile, MoveFile, DeleteFile } from '../../wailsjs/go/services/FileServices.js';
+import { CreateFile, ReadFile, WriteFile, MoveFile, DeleteFile, RenameFile } from '../../wailsjs/go/services/FileServices.js';
 
 // FROM FRONTEND TO BACKEND
 export const startUpServices = {
@@ -29,7 +29,8 @@ export const fileServices = {
     READ_FILE: readFile,
     SAVE_FILE: writeFile,
     MOVE_FILE: moveFile,
-    DELETE_FILE: deleteFile
+    DELETE_FILE: deleteFile,
+    RENAME_FILE: renameFile
 }
 /*======= START UP SERVICES ========*/
 
@@ -302,6 +303,32 @@ async function deleteFile (fileName, projectPath, filePath, activeFileName) {
             success: false,
             data: err,
             message: "Unable to delete file"
+        }
+    }
+}
+
+async function renameFile (fileName, oldNamePath, newNamePath ) {
+
+    const start = performance.now()
+    try{ 
+        logger.INFO("RENAME", fileName, "Renaming file", null, performance.now() - start)
+
+        const result = await RenameFile(oldNamePath, newNamePath)
+
+        logger.INFO("COMPLETED", fileName, "File is renamed", result, performance.now() - start)
+        return {
+            success: true,
+            data: result,
+            message: "File renamed successfully"
+        }
+    }
+    catch(err) {
+        logger.ERROR(err)
+
+        return {
+            success: false,
+            data: err,
+            message: "Unable to rename file"
         }
     }
 }

@@ -23,6 +23,12 @@ export function renderHeader() {
     leftDockBtn.textContent = "dock_to_right";
     leftBtns.appendChild(leftDockBtn);
 
+   
+
+    const fileNameContainer = document.createElement("div");
+    register("header", "fileNameContainer", fileNameContainer)
+
+
 
     //Right Buttons container
     const rightBtns = document.createElement("div");
@@ -32,6 +38,18 @@ export function renderHeader() {
     rightBtns.appendChild(rightDockBtn);
 
     //appending to header
-    header.append(leftBtns,rightBtns);
+    header.append(leftBtns, fileNameContainer, rightBtns);
     
+}
+
+ON(events.file.req.read, {callback: fileName})
+    
+function fileName() {
+    const fileNameContainer = get("header.js", "header", "fileNameContainer")
+    fileNameContainer.replaceChildren()
+    console.log(appstate.file.name)
+    const activeFileName = document.createElement('p')
+    activeFileName.textContent = appstate.file.name
+    fileNameContainer.append(activeFileName)
+
 }

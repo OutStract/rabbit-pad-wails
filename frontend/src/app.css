@@ -14,6 +14,9 @@
     --button-w: 150px;
     --button-h: 30px;
     --button-radius: 8px;
+    --selected: #6565652f;
+    --selected-radius: 4px;
+    --error: #EF2d56;
 
 }
 
@@ -292,6 +295,8 @@ hr {
 
 #file-container{
     flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .project-title{
@@ -307,12 +312,30 @@ hr {
     border-right:var(--border-color);
     min-width: var(--tool-bar-min-w)
 }
-
+.project-container{
+    display: flex;
+    flex-direction: column;
+    border: red solid;
+    flex: 1
+}
 #project-nodes-container{
+    flex: 1;
     padding: var(--padding-min);
 }
 .node-name{
     margin: 0;
+    width: 156px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+
+}
+
+.invalid-name{
+    border: none;
+    background-color: var(--error);
+    border-radius: var(--selected-radius);
 }
 
 
@@ -324,19 +347,21 @@ hr {
     display: flex;
     justify-content: start;
     align-items: center;
-    gap: 10px;
+    gap: 2px;
     text-align: left;
+    padding: 2px;
 }
 
 .child-block {
-    margin-left: 6px;
+    margin-left: 10px;
     padding-left: var(--padding-min);
     border-left: var(--thread);
 }
 
 
 .tree-cell-selected {
-    border: solid;
+    background-color: var(--selected);
+    border-radius: var(--selected-radius);
 }
 
 

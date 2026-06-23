@@ -23,6 +23,37 @@ export async function renderProjectTree() {
         //Project Nodes Container
         const projectNodesContainer = document.createElement("div");
         projectNodesContainer.id = 'project-nodes-container'
+        projectNodesContainer.dataset.path = appstate.project.path
+        projectNodesContainer.dataset.isFolder = true
+        projectNodesContainer.addEventListener('dragover', (event) => {
+            event.preventDefault()
+            console.log ("Sources", selection)
+        })
+
+        projectNodesContainer.addEventListener('drop',  async (event) => {
+            event.preventDefault(); // Prevent browser from opening the file/link
+            event.stopPropagation(); // Stop it from bubbling up to parent folders
+            console.log("DROP")
+                const dropPath = event.currentTarget.dataset
+                console.log("DESTINATION", dropPath.path)
+                console.log ("Sources", selection)
+
+                if(dropPath.isFolder) {
+                    
+                    for(const oldPath of selection) {
+                        console.log("CHECKED")
+                        const sourceSplit = oldPath.split("/")
+                        const sourceName = sourceSplit.pop()
+                        await fileServices.MOVE_FILE("projectTree.js", dropPath.path, oldPath, sourceName)
+                        console.log("DESTINATION",dropPath.path, "Original",  oldPath)
+                        
+                        console.log("SOURCE NAME", sourceName)
+
+                    }
+                }
+        })
+        
+
         register("leftSide", "projectNodesContainer", projectNodesContainer)
 
 
@@ -47,6 +78,7 @@ export async function renderProjectTree() {
 ON(events.file.res.created,{callback: wrapper})
 ON(events.file.res.moved,{callback: wrapper})
 ON(events.file.res.deleted,{callback: wrapper})
+ON(events.file.res.renamed,{callback: wrapper})
 
 
 
@@ -63,13 +95,19 @@ async function wrapper() {
 const selection = new Set();
 const openFolder = new Set();
 appstate.selectionList = selection
-
+window.addEventListener('keydown', () => {
+    
+    if (event.ctrlKey && event.key.toLowerCase() === 'r') {
+        renameFile()
+    }
+})
 // So there was a problem where this being inside the function made multiple instances of this
 // with every recursion, making cross folder movement impossible, because when you moved the file out of the folder
 // It started refrencing the selection of that other folder and with other folder having empty selection it 
 // Cancelld the file movement, to fix it we made selection a global variable
 // Now regardless of amount of recoursions, the dragging will always reference the correct set of data 
 let lastClickedCell = null;
+let isListener = true
 
 
 async function newFileTree(nodes, container) {
@@ -86,7 +124,10 @@ async function newFileTree(nodes, container) {
 
         function treeSelection(event) {
 
-
+            if(!isListener) {
+                return
+            }
+            
             // Case 1 Shift selection
         if (event.shiftKey) {
             // Get the cell that user clicked with shift
@@ -152,6 +193,7 @@ async function newFileTree(nodes, container) {
             treeCell.classList.add("tree-cell-selected")
             lastClickedCell = treeCell
             console.log("REGULAR SELECTION",selection)
+            
 
         }
     }
@@ -170,11 +212,11 @@ async function newFileTree(nodes, container) {
         folderCell.dataset.name = node.name
         treeCell.dataset.isFolder = node.isFolder
 
-        folderCell.dataset.path = node.path
+        // folderCell.dataset.path = node.path
         treeCell.dataset.path = node.path
 
 
-        
+       
 
         treeCell.draggable = true
         treeCell.tabIndex = 0
@@ -200,8 +242,7 @@ async function newFileTree(nodes, container) {
 
         treeCell.addEventListener('dragover', (event) => {
             event.preventDefault()
-                            console.log ("Sources", selection)
-
+            console.log ("Sources", selection)
         })
 
         treeCell.addEventListener('drop',  async (event) => {
@@ -209,7 +250,7 @@ async function newFileTree(nodes, container) {
             event.stopPropagation(); // Stop it from bubbling up to parent folders
             console.log("DROP")
                 const dropPath = event.currentTarget.dataset
-                console.log("DESITNATION", dropPath.path)
+                console.log("DESTINATION", dropPath.path)
                 console.log ("Sources", selection)
 
                 if(dropPath.isFolder === "true") {
@@ -226,7 +267,6 @@ async function newFileTree(nodes, container) {
                     }
                 }
         })
-
         
         
         name.dataset.path = node.path
@@ -282,10 +322,14 @@ async function newFileTree(nodes, container) {
             treeCell.append(cellIcon, name)
             // treeCell.addEventListener('click', fileClick)
             function fileClick(event) {
+                if(!isListener) {
+                    return
+                }
                 event.stopPropagation()
                 const activeFile = name.dataset.path
                 console.log("Path from projectTree.js is:", activeFile)
                 appstate.file.path = activeFile
+                appstate.file.name = node.name
                 const payload = {
                     source: "projectTree.js",
                     data: activeFile,
@@ -306,3 +350,135 @@ async function newFileTree(nodes, container) {
 }
 
 
+function renameFile() {
+
+    let validName = false
+
+    // Getting The filepath for element search
+    const filePath = Array.from(selection);
+    const lastFilePath = filePath.at(-1)
+    console.log("LAST FILE PATH IS",lastFilePath)
+    console.log("RENAMING FROM SELECTION",selection)
+
+    // Saving old name in memory
+    const splitPath = lastFilePath.split(/[\\/]/)
+    const oldFileName = splitPath.pop()
+    let splitOldName = oldFileName.split(".")
+    console.log("LENGTH",splitOldName.length)
+    if(splitOldName.length > 1) {
+        splitOldName.pop()
+    }
+    console.log("CLEAN NAME", splitOldName)
+
+    // Getting the cell from file path
+    const rootTreeContainer = get("projectTree.js", "leftSide", "projectNodesContainer")
+    const renamingCell = rootTreeContainer.querySelector(`[data-path = "${lastFilePath}"]`)
+    console.log("LAST SELECTED CELL IS ", renamingCell)
+    event.preventDefault(); 
+
+    // searing for the name element to replace
+    let nodeName = renamingCell.querySelector('.node-name')
+    // if(renamingCell.classList.contain('folder-cell')) {
+
+    // }
+    console.log("NODE NAME", nodeName)
+    renamingCell.classList.add('this')
+    renamingCell.removeChild(nodeName)
+    const nameInput = document.createElement('input')
+    nameInput.value = splitOldName
+    renamingCell.append(nameInput)
+    nameInput.focus()
+
+    // Getting the parent path from the tree
+    let tree = [
+        {
+            "name": appstate.project.name,
+            "path": appstate.project.path,
+            "isFolder": true,
+            "children": appstate.project.tree
+        }
+    ]
+    const fileParent = splitPath.join('/')
+    console.log("FILE PARENT", fileParent)
+    let parentObj = tree.filter(parent => parent.path == fileParent)[0]
+    if(!parentObj) {
+        console.log(tree[0].children)
+        tree = tree[0].children
+        parentObj = tree.filter(parent => parent.path == fileParent)[0]
+    }
+
+    console.log("PARENT OBJECT", parentObj)
+    
+    console.log("LAST FILE PATH",lastFilePath)
+    
+    const fileObject = parentObj.children.filter(child => child.path == lastFilePath)[0]
+    console.log("FILE OBJ", fileObject)
+    // Removing listener from the cell
+    isListener = false
+    nameInput.addEventListener('input', (event) => {
+
+        // Getting user input for checking
+        let userInput = event.target.value
+        const inputStartChar = userInput[0]
+        
+        if(!fileObject.isFolder){
+            userInput = `${event.target.value}.md`
+        }
+
+
+        // Validation
+        const notAllowed = [".", "/", "?", "!", "#", "$", "%"]
+        const nameCheck = parentObj.children.filter(child => child.name == userInput)[0]
+        const charCheck = notAllowed.filter(char => char == inputStartChar)[0]
+        console.log("NAME CHECK",nameCheck)
+        console.log("Character CHECK",charCheck)
+
+        if (charCheck) {
+            nameInput.classList.add('invalid-name')
+            validName = false
+            console.log("Name cannot start with special character", charCheck)
+            return
+        }
+        if(nameCheck) {
+            nameInput.classList.add('invalid-name')
+            validName = false
+            console.log("File Name already exist", nameCheck.name)
+            return
+        }
+
+        nameInput.classList.remove('invalid-name')
+        validName = true
+        console.log(userInput, "Is a valid name")
+    });
+    nameInput.addEventListener('blur', validRename)
+    nameInput.addEventListener('keydown', validRename)
+
+
+    function validRename(event) {
+        if(event.key === 'Enter' || event.type === 'blur') {
+            
+            console.log("VALID NAME ?", validName)
+            if (!validName) {
+                renamingCell.classList.remove('invalid-name')
+                renamingCell.removeChild(nameInput)
+                renamingCell.append(nodeName)
+                nodeName.textContent = oldFileName
+                isListener = true
+                return
+            }
+    
+            let newNamePath = `${fileParent}/${nameInput.value}`
+            if(!fileObject.isFolder) {
+                newNamePath = `${fileParent}/${nameInput.value}.md`
+            }
+            console.log(newNamePath)
+            renamingCell.classList.remove('invalid-name')
+                
+            fileServices.RENAME_FILE("projectTree.js", lastFilePath, newNamePath )
+                renamingCell.removeChild(nameInput)
+                renamingCell.append(nodeName)
+                // nodeName.textContent = nameInput.value 
+                isListener = true
+        }
+    }
+}
