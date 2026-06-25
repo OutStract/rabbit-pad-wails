@@ -37,7 +37,6 @@ function appendNewFile() {
             name.addEventListener('click', (event) => {
                 event.stopPropagation()
                 const activeFile = name.dataset.path
-                console.log("Path from projectTree.js is:", activeFile)
                 appstate.file.path = activeFile
                 const payload = {
                     source: "projectTree.js",

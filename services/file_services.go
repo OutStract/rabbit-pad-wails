@@ -1,13 +1,14 @@
 package services
 
-import(
+import (
 	"context"
-	"path/filepath"
-	"os"
+	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/google/uuid"
 	"github.com/wailsapp/wails/v2/pkg/runtime"
-
 )
 
 
@@ -15,7 +16,7 @@ type FileServices struct {
 	Ctx context.Context
 }
 
-func (f *FileServices) CreateFile (ProjectPath string) {
+func (f *FileServices) CreateFile(ProjectPath string) {
 	
 	count := 0
 	filePath := filepath.Join(ProjectPath, fmt.Sprintf("%d-untitled.md", count))
@@ -51,7 +52,7 @@ func (f *FileServices) CreateFile (ProjectPath string) {
 
 }
 
-func (f *FileServices) ReadFile (FilePath string) (string, error) {
+func (f *FileServices) ReadFile(FilePath string) (string, error) {
 
 	content, err := os.ReadFile(FilePath)
 
@@ -101,7 +102,7 @@ func (f *FileServices) WriteFile(content, path string) {
 
 }
 
-func (f *FileServices) MoveFile (destination, source, name string) {
+func (f *FileServices) MoveFile (destination, source, name string) (string, error) {
 
 	dest := destination
 	src := source
@@ -112,13 +113,13 @@ func (f *FileServices) MoveFile (destination, source, name string) {
 
 	if err == nil {
 		LogError("[FileServices]", "File already exist in the destination path", err)
-		return
+		return "File with same name already exist in the destination folder", errors.New("File with same name already exist in the destination folder")
 	}
 
 	err = os.Rename(src, destinationPath)
 	if err != nil {
 		LogError("[FileServices]", "There was problem in moving the file", err)
-		return
+		return "There was a problem in moving the file", err
 	}
 
 	message := dest
@@ -126,6 +127,8 @@ func (f *FileServices) MoveFile (destination, source, name string) {
 		runtime.EventsEmit(f.Ctx, "file-moved", message)
 		LogInfo("[FileService]","File moved successfully", message)
     }
+
+	return "File moved successfully", nil
 
 }
 
@@ -180,4 +183,35 @@ func (f *FileServices) RenameFile (OldNamePath, BasePath, NewName string) {
 		runtime.EventsEmit(f.Ctx, "file-renamed", message)
 		LogInfo("[FileService]","File renamed successfully", message)
     }
+}
+
+func (f *FileServices) CreateFolder(ProjectPath string) {
+    count := 0
+	FolderPath := filepath.Join(ProjectPath, fmt.Sprintf("%d-New Folder", count))
+
+
+	LogInfo("[FileService]", "Checking if the folder exist")
+
+	for {
+		_, err := os.Stat(FolderPath) 
+		if err != nil {
+			LogAlerts("[FileService]", "Found a available path", FolderPath)
+			break
+		}
+		count++
+		FolderPath = filepath.Join(ProjectPath, fmt.Sprintf("%d-New Folder", count))
+	}
+
+	err := os.MkdirAll(FolderPath, 0755)
+
+	if err != nil {
+		LogError("[FileServices]", "There was a error in creating the folder", err)
+	}
+
+	message := FolderPath
+	if f.Ctx != nil {
+		runtime.EventsEmit(f.Ctx, "folder-created", message)
+		LogInfo("[FileService]","Create File Process ended", FolderPath)
+    }
+
 }

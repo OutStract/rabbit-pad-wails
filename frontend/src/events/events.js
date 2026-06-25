@@ -1,10 +1,13 @@
 import { EventsOn, EventsEmit } from '../../wailsjs/runtime/runtime';
+import { getName } from '../Labours/splitLabour';
 import {appstate} from '/src/appstate/appstate.js'
 import {logger} from '/src/logs/logger.js'
 
 export const events = {
     app: {
         reload: "reload-app-startup",
+        fileTree: "update-file-tree",
+        result: "result"
     },
     project: {
         req: {
@@ -19,7 +22,10 @@ export const events = {
     file: {
         req: {
             read: "read-file",
-            editor: "render-editor"
+            editor: "render-editor",
+            delete: "delete-file",
+            rename: "rename-file",
+            cellListener: "remove-cell-listener"
         },
         res: {
             created: "new-file",
@@ -27,17 +33,31 @@ export const events = {
             deleted: "file-deleted",
             renamed: "file-renamed"
         }
+    },
+    folder: {
+        req: {
+            create: "create-folder"
+        },
+        res: {
+            created: "folder-created"
+        }
     }
 }
 
 export function emit(event, payload) {
-    console.log("Event emitted", event, "from", payload.source)
+    // console.log("Event emitted", event, "from", payload.source)
     EventsEmit(event, payload)
 }
 
 export function ON(event, {callback}) {
     EventsOn(event,  () => {
         callback()
+    })
+}
+
+export function onPayload(event, {callback}) {
+    EventsOn(event,  (payload) => {
+        callback(payload)
     })
 }
 
@@ -67,8 +87,7 @@ EventsOn("new-project", (message) => {
 /*======= START UP SERVICES ========*/
 
 EventsOn("startup-config-found", (message) => {
-    const libraryName = message.split(/[\\/]/);
-    appstate.library.name = libraryName.pop()
+    appstate.library.name = getName(message)
     appstate.library.path = message
     logger.INFO("STARTUP EVENT", "events.js", "Start up config found", message, null)
 });
@@ -94,15 +113,13 @@ EventsOn("library-loaded", (message) => {
 })
 
 EventsOn("lib-config-found", (message) => {
-    const projectname = message.split(/[\\/]/);
-    appstate.project.name = projectname.pop()
+    appstate.project.name = getName(message)
     appstate.project.path = message
     logger.INFO("LIBRARY EVENT", "events.js", "Library config found", message, null)
 })
 
 EventsOn("lib-config-update", (message) => {
-    const projectname = message.split(/[\\/]/);
-    appstate.project.name = projectname.pop()
+    appstate.project.name = getName(message)
     appstate.project.path = message
     logger.INFO("LIBRARY EVENT", "events.js", "Library config update", message, null)
 })
@@ -153,5 +170,9 @@ EventsOn("file-deleted", (message) => {
 })
 
 EventsOn("file-renamed", (message) => {
-    logger.INFO("FILE EVENT", "events.js", "File deleted", message, null)
+    logger.INFO("FILE EVENT", "events.js", "File renamed", message, null)
+})
+
+EventsOn("folder-created", (message) => {
+    logger.INFO("FILE EVENT", "events.js", "folder created", message, null)
 })

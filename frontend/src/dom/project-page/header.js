@@ -2,6 +2,7 @@ import {events, emit, ON} from '/src/events/events.js'
 import { appstate } from '/src/appstate/appstate.js'
 import { libraryServices } from '/src/api/api.js'
 import {register, get} from '/src/appstate/skeleton.js'
+import { getName } from '../../Labours/splitLabour'
 
 
 
@@ -43,13 +44,19 @@ export function renderHeader() {
 }
 
 ON(events.file.req.read, {callback: fileName})
-    
+ON(events.app.fileTree, {callback: fileName})
+
 function fileName() {
     const fileNameContainer = get("header.js", "header", "fileNameContainer")
     fileNameContainer.replaceChildren()
-    console.log(appstate.file.name)
+    console.log("FILE 5", appstate.file.name ,appstate.file.path)
     const activeFileName = document.createElement('p')
-    activeFileName.textContent = appstate.file.name
+    const localFilePath = localStorage.getItem(appstate.project.path)
+    if(!localFilePath) {
+        return
+    }
+    activeFileName.textContent = getName(localFilePath)
+    console.log("FILE 6", appstate.file.name ,appstate.file.path)
     fileNameContainer.append(activeFileName)
 
 }

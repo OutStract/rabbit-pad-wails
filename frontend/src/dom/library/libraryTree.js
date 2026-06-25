@@ -2,12 +2,12 @@ import {events, emit, ON} from '/src/events/events.js'
 import { appstate } from '/src/appstate/appstate.js'
 import { libraryServices } from '/src/api/api.js'
 import {register, get, skeleton} from '/src/appstate/skeleton.js'
+import { getName } from '../../Labours/splitLabour'
 
 
 
 export function renderLibraryTree() {
     
-    console.log("libraryTreeContainer",skeleton.library.libraryTreeContainer)
     const libraryBody = get("libraryTree.js","library", "libraryBody")
     
     const libraryTreeContainer = document.createElement("div");
@@ -23,7 +23,6 @@ export function renderLibraryTree() {
 async function loadLibraryTree () {
 
     const container = get("libraryTree.js function: loadLibraryTree","library", "libraryTreeContainer")
-    console.log("Container", container)
 
     const newProjectBlock = document.createElement("div");
     newProjectBlock.id = "new-project-block"
@@ -95,8 +94,8 @@ function addNewProject() {
     const container = get("libraryTree.js","library", "libraryTreeContainer")
 
     const newNodePath = appstate.project.newProjectPath
-    const nameExtractions = newNodePath.split(/[\\/]/);
-    const newNodeName = nameExtractions.pop()
+    // const nameExtractions = newNodePath.split(/[\\/]/);
+    const newNodeName = getName(newNodePath)
 
     const libraryNode = document.createElement("div")
         libraryNode.id = "library-node";

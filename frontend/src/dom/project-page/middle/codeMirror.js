@@ -19,14 +19,14 @@ const secretWord = /<--!([\s\S]*?)-->/g;
 // --- REGISTER THE EVENT EXPLICITLY ONCE AT THE MODULE LEVEL ---
 ON(events.file.req.read, { callback: readFile })
 
+
 async function readFile() {
     const filePath = appstate.file.path
-    console.log("Read file path:", filePath)
+    console.log("STEP 4",appstate.file.path)
     if (!filePath) return;
 
     try {
-        const content = await fileServices.READ_FILE("codemirror.js", filePath)
-        
+        const content = await fileServices.READ_FILE("codemirror.js", filePath)        
         // Safety check to ensure view exists before trying to assign state
         if (view) {
             view.setState(EditorState.create({
@@ -52,6 +52,7 @@ async function readFile() {
 
 // --- MAIN WRAPPER FUNCTION ---
 export function codeMirror() {
+    console.log("STEP 3",appstate.file.path)
     const middleBody = get("codeMirror.js", "middle", "middleBody")
     middleBody.replaceChildren()
 

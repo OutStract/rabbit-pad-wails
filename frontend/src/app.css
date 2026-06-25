@@ -17,6 +17,8 @@
     --selected: #6565652f;
     --selected-radius: 4px;
     --error: #EF2d56;
+    --error-font-size: 12px;
+    --cell-hover: #65656516;
 
 }
 
@@ -136,6 +138,28 @@ hr {
 
 }
 
+
+/*===================== library =====================*/
+
+#system-message {
+    position: absolute;
+    min-width: 300px;
+    padding: 6px;
+    background-color: var(--error);
+    border: var(--border-color);
+    z-index: 20;
+    top: 90%;
+    /* top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); */
+    border-radius: var(--border-radius)
+}
+
+.system-message-text{
+    font-size: var(--error-font-size);
+    margin: 0;
+    padding: 0;
+}
 /*===================== library =====================*/
 
 #library-container{
@@ -230,11 +254,14 @@ hr {
     justify-content: center;
     align-items: center;
     gap: 18px;
+    margin-bottom: 16px;
 }
 
 #new-proj-input {
     width: 75%;
     height: var(--header-height);
+    border-radius: var(--border-radius);
+    border: none;
     text-align: center;
 }
 
@@ -245,6 +272,23 @@ hr {
     border-style:none;
     padding:0;
     margin:0;
+}
+
+.project-input-warning-container{
+    height: 16px;
+}
+
+.project-input-warning{
+    font-size: var(--error-font-size);
+    margin: 0;
+    padding: 0;
+    color: var(--error);
+}
+
+.not-allowed{
+    border: none;
+    border-radius: var(--border-radius);
+    background-color: var(--error);
 }
 
 /*===================== project =====================*/
@@ -309,13 +353,13 @@ hr {
 }
 
 .left-tool-bar{
+    padding-top: var(--padding-min);
     border-right:var(--border-color);
     min-width: var(--tool-bar-min-w)
 }
 .project-container{
     display: flex;
     flex-direction: column;
-    border: red solid;
     flex: 1
 }
 #project-nodes-container{
@@ -352,6 +396,11 @@ hr {
     padding: 2px;
 }
 
+.node-cell:hover {
+    background-color: var(--cell-hover);
+    border-radius: var(--selected-radius);
+}
+
 .child-block {
     margin-left: 10px;
     padding-left: var(--padding-min);
@@ -375,6 +424,8 @@ hr {
 
 #middle-body {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
     height: 100%;
     min-height: 0;
     width: 100%;

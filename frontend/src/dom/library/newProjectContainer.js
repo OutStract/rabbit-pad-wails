@@ -7,6 +7,7 @@ ON(events.project.req.create, {callback: renderNewProject})
 
 
 export async function renderNewProject() {
+    
         const addProjectContainer = document.createElement("div")
         addProjectContainer.classList.add ("add-project-block")
 
@@ -24,6 +25,38 @@ export async function renderNewProject() {
         addProjectName.placeholder = "New Project Name"
         addProjectName.id = "new-proj-input"
         addProjectName.focus
+        const warningContainer = document.createElement('div')
+        warningContainer.classList.add('project-input-warning-container')
+        const inputWarning = document.createElement('p')
+        inputWarning.classList.add('project-input-warning')
+
+        addProjectName.addEventListener('input', (event) => {
+            const projectTree = appstate.library.tree
+            const userInput = event.target.value
+            
+            const inputStartChar = userInput[0]
+            const notAllowed = [".", "/", "?", "!", "#", "$", "%"]
+            
+            const nameCheck = projectTree.filter(project => project.name.toLowerCase() === userInput.toLowerCase())[0]
+            const charCheck = notAllowed.filter(char => char === userInput[0])[0]
+
+            if(nameCheck || charCheck) {
+                warningContainer.append(inputWarning)
+                addProjectName.classList.add('not-allowed')
+                createProjBtn.disabled = true
+            }
+
+            if(nameCheck) {
+                inputWarning.textContent = "Project with same name already exist"
+            } else if (charCheck) {
+                inputWarning.textContent = "Project name cannot contain special characters like: . / ? ! # $"
+            } else {
+                warningContainer.removeChild(inputWarning)
+                addProjectName.classList.remove('not-allowed')
+                createProjBtn.disabled = false
+            }
+
+        })
 
         const createProjBtn = document.createElement("button")
         createProjBtn.textContent = "Create"
@@ -31,13 +64,12 @@ export async function renderNewProject() {
         createProjBtn.addEventListener('click',async () => {
             const name = addProjectName.value
             const path = appstate.library.path
-            console.log(path, name)
             await projectServices.MAKE_PROJECT("newProjectContainer.js",path, name)
             addProjectContainer.remove()
         })
 
 
-        addProjectBody.append(addProjectName, createProjBtn)
+        addProjectBody.append(warningContainer, addProjectName, createProjBtn)
 
         const removeProjectContainer = document.createElement("span")
         removeProjectContainer.classList.add("material-symbols-outlined")

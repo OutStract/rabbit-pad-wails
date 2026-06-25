@@ -3,7 +3,7 @@ import {logger} from '/src/logs/logger.js'
 import { ConfigCheck, UpdateConfig  } from '../../wailsjs/go/services/StartUpServices.js';
 import { MakeLib, LibTree, LoadLibConfig, UpdateLibConfig } from '../../wailsjs/go/services/LibraryServices.js';
 import { MakeProject, ProjectTree } from '../../wailsjs/go/services/ProjectServices.js';
-import { CreateFile, ReadFile, WriteFile, MoveFile, DeleteFile, RenameFile } from '../../wailsjs/go/services/FileServices.js';
+import { CreateFile, ReadFile, WriteFile, MoveFile, DeleteFile, RenameFile, CreateFolder } from '../../wailsjs/go/services/FileServices.js';
 
 // FROM FRONTEND TO BACKEND
 export const startUpServices = {
@@ -30,7 +30,8 @@ export const fileServices = {
     SAVE_FILE: writeFile,
     MOVE_FILE: moveFile,
     DELETE_FILE: deleteFile,
-    RENAME_FILE: renameFile
+    RENAME_FILE: renameFile,
+    CREATE_FOLDER: createFolder
 }
 /*======= START UP SERVICES ========*/
 
@@ -214,7 +215,7 @@ async function readFile (fileName, filePath) {
         return {
             success: true,
             data: result,
-            message: "File created successfully"
+            message: "File read successfully"
         }
     }
     catch(err) {
@@ -223,7 +224,7 @@ async function readFile (fileName, filePath) {
         return {
             success: false,
             data: err,
-            message: "Unable to create file"
+            message: "Unable to read file"
         }
     }
 }
@@ -329,6 +330,32 @@ async function renameFile (fileName, oldNamePath, basePath, newName ) {
             success: false,
             data: err,
             message: "Unable to rename file"
+        }
+    }
+}
+
+async function createFolder (fileName, projectPath) {
+
+    const start = performance.now()
+    try{ 
+        logger.INFO("MAKE", fileName, "Making new folder", null, performance.now() - start)
+
+        const result = await CreateFolder(projectPath)
+
+        logger.INFO("COMPLETED", fileName, "Folder is created", result, performance.now() - start)
+        return {
+            success: true,
+            data: result,
+            message: "Folder created successfully"
+        }
+    }
+    catch(err) {
+        logger.ERROR(err)
+
+        return {
+            success: false,
+            data: err,
+            message: "Unable to create folder"
         }
     }
 }

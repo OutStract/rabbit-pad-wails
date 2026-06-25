@@ -17,8 +17,10 @@ import { renderNewProject } from '/src/dom/library/newProjectContainer'
 
 const app = document.getElementById("app");
 register("app","app",app)
-console.log("main", app)
 
+import './Labours/fileLabours'
+import './events/shortcuts'
+import './Labours/messageLabour'
 
 
 async function startUpCheck() {

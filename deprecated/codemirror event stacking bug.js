@@ -50,7 +50,6 @@ export function codeMirror () {
                 const content = view.state.doc.toString()
                 const filePath = appstate.file.path
 
-                // console.log(content)
                 fileServices.SAVE_FILE("codeMirror.js", content, filePath)
             }, 500)
         }
@@ -82,14 +81,12 @@ export function codeMirror () {
         let match; // Empty match will use next
 
         for(const match of text.matchAll(regex)) {  // Lookes for every instace of the regex
-            console.log("CODEMIRROR",match)
             const start = match.index;  // Okay so this seems to be giving the starting character position in the string
             // From google When you use a Regular Expression method like exec() or match(),
             //  the resulting object includes an .index property. 
             // It represents the zero-based position where the match was found in the original string
             
             const end = start + match[0].length; 
-            console.log(end)
             //Okay so this is basically saying take the starting position of the regex in the string
             // Then count the characters in the word itself starting from the [0] index of the word
             //Add them up togeather to get the last character position
@@ -220,7 +217,6 @@ const fortifyMetadataExtension = EditorState.transactionFilter.of((tr) => {
 
 async function readFile() {
     const filePath = appstate.file.path
-    console.log("Read file path",filePath)
     if (!filePath) {
         return "<--! No file is opened -->"
     }

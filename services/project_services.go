@@ -2,40 +2,48 @@ package services
 
 import (
 	"context"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
-	"path/filepath"
+	"errors"
 	"os"
+	"path/filepath"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type ProjectServices struct {
 	Ctx context.Context
 }
 
-func (p *ProjectServices) MakeProject (libPath, projectName string) {
+func (p *ProjectServices) MakeProject (libPath, projectName string) error {
 	projectPath := filepath.Join(libPath, projectName)
+
+	_,err := os.Stat(projectPath)
+	if err == nil {
+		LogError("[ProjectServices]","Project with the same name already exist:", err)
+		return errors.New("Project with the same name already exist")
+	}
 	// Check for existing file
 	systemFolder := filepath.Join(projectPath, "system")
 	userFolder := filepath.Join(projectPath, "user")
 	trashFolder := filepath.Join(projectPath, ".trash")
 
-	err := os.MkdirAll(systemFolder, 0755)
+	err = os.MkdirAll(systemFolder, 0755)
 			if err != nil {
 			LogError("[ProjectServices]","There was a problem in creating the system folder:", err)
-			return
+			return err
 		}
 	LogSuccess("[ProjectServices]", "The system folder has been made successfully")
 
 	err = os.MkdirAll(userFolder, 0755)
 			if err != nil {
 			LogError("[ProjectServices]","There was a problem in creating the user folder:", err)
-			return
+			return err
 		}
 	LogSuccess("[ProjectServices]", "The user folder has been made successfully")
 
 	err = os.MkdirAll(trashFolder, 0755)
 			if err != nil {
 			LogError("[ProjectServices]","There was a problem in creating the trash folder:", err)
-			return
+			return err
 		}
 	LogSuccess("[ProjectServices]", "The trash folder has been made successfully")
 
@@ -44,6 +52,8 @@ func (p *ProjectServices) MakeProject (libPath, projectName string) {
 		runtime.EventsEmit(p.Ctx, "project-created", message)
 		LogInfo("[ProjectServices]", "Project Created successfully")
     }
+
+	return nil
 }
 
 type ProjectNode struct {

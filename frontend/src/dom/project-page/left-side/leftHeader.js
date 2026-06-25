@@ -25,35 +25,37 @@ export async function renderLeftHeader () {
 
 
         const newFileBtn = document.createElement("div")
-            const newFileBtnIcon = document.createElement("span")
-            newFileBtnIcon.classList.add("material-symbols-outlined")
-            newFileBtnIcon.textContent = "add_notes"
-            newFileBtnIcon.addEventListener('click', async () => {
-                await fileServices.CREATE_FILE("leftHeader.js",appstate.project.path)
-            })
-            newFileBtn.append(newFileBtnIcon)
+        const newFileBtnIcon = document.createElement("span")
+        newFileBtnIcon.classList.add("material-symbols-outlined")
+        newFileBtnIcon.textContent = "add_notes"
+        newFileBtnIcon.addEventListener('click', async () => {
+            await fileServices.CREATE_FILE("leftHeader.js",appstate.project.path)
+        })
+        newFileBtn.append(newFileBtnIcon)
+
+        const newFolderBtn = document.createElement("div")
+        const newFolderBtnIcon = document.createElement("span")
+        newFolderBtnIcon.classList.add("material-symbols-outlined")
+        newFolderBtnIcon.textContent = "create_new_folder"
+        newFolderBtnIcon.addEventListener('click', async () => {
+            await fileServices.CREATE_FOLDER("leftHeader.js",appstate.project.path)
+        })
+        newFolderBtn.append(newFolderBtnIcon)
         
         const deleteFileBtn = document.createElement("div")
             const deleteFileBtnIcon = document.createElement("span")
             deleteFileBtnIcon.classList.add("material-symbols-outlined")
             deleteFileBtnIcon.textContent = "delete"
-            deleteFileBtnIcon.addEventListener('click', async () => {
-                for(const oldPath of selection) {
-                        const sourceSplit = oldPath.split("/")
-                        const sourceName = sourceSplit.pop()
-                        await fileServices.DELETE_FILE("projectTree.js", projectPath, oldPath, sourceName)
-                        console.log("Original" ,oldPath)
-                        
-                        console.log("SOURCE NAME", sourceName)
-
-                    }
+            deleteFileBtnIcon.addEventListener('click', () => {
+                console.log("DELETE 1", appstate.file.path)
+                emit(events.file.req.delete, "delete file")
             })
             deleteFileBtn.append(deleteFileBtnIcon)
 
-            leftHeaderBtn.append(newFileBtn, deleteFileBtn)
+            leftHeaderBtn.append(newFileBtn,newFolderBtn, deleteFileBtn)
     
             containerLeft.append(leftHeaderBody)
     
             leftHeaderBody.append(projectTitleBlock, leftHeaderBtn)
-
 }
+

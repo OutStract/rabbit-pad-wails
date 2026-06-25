@@ -17,7 +17,7 @@ export const appstate = {
         },
         {
             "newProjectPath": null
-        }
+        }, 
     ],
     "file": [
         {

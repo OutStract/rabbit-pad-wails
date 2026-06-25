@@ -79,11 +79,9 @@ export function renderStartUp () {
         libraryLocationInput.classList.add('start-btn')
         
         libraryLocationInput.addEventListener("click", async () => {
-            console.log("Clicked")
             try {
                 
                 const result = await OpenDirectory()
-                console.log(result)
                 locationContainer.append(locationText)
                 locationText.innerText = result
 

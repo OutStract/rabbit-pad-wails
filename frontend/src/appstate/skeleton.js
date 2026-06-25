@@ -13,7 +13,7 @@ export function register (block, name, element) {
     }
 
     if(skeleton[block][name]) {
-        console.log(`Overwriting : ${block}.${name}`)
+        // console.log(`Overwriting : ${block}.${name}`)
     }
     
     skeleton[block][name] = element
@@ -24,7 +24,7 @@ export function get(file, block, name) {
         throw new Error(`Unknown block found ${block}`)
     }
 
-    console.log( name, `"GET" successful for ${file}` , "Conected?", skeleton[block][name]?.isConnected)
+    // console.log( name, `"GET" successful for ${file}` , "Conected?", skeleton[block][name]?.isConnected)
 
     return skeleton[block][name]
 }

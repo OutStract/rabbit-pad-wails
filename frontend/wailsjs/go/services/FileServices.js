@@ -6,6 +6,10 @@ export function CreateFile(arg1) {
   return window['go']['services']['FileServices']['CreateFile'](arg1);
 }
 
+export function CreateFolder(arg1) {
+  return window['go']['services']['FileServices']['CreateFolder'](arg1);
+}
+
 export function DeleteFile(arg1, arg2, arg3) {
   return window['go']['services']['FileServices']['DeleteFile'](arg1, arg2, arg3);
 }

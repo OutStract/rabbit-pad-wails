@@ -21,19 +21,25 @@ function time() {
     return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}.${String(now.getMilliseconds()).padStart(3, "0")}`
 }
 
+const isActive = false
+
 function info (type, file, job, value, performance) {
+    if(!isActive) return
     console.log(`%c[${time()}] %c${performance} %c[INFO] %c[${file}]: [${type}]: ${job}  RETURN: %c[${value}]`,timer, returnValue, blue, text, blue )
     
 }
 
 function error (type, file, job, value) {
+    if(!isActive) return
     console.log(`%c[${time()}] %c[ERROR] %c[${file}]: [${type}]: ${job} RETURN: %c[${value}]`,timer, red, text, red )
 }
 
 function alert (type, file, job, value) {
+    if(!isActive) return
     console.log(`%c[${time()}] %c[ALERT] %c[${file}]: [${type}]: ${job} RETURN: %c[${value}]`,timer, yellow, text, yellow )
 }
 
 function success (type, file, job, value) {
+    if(!isActive) return
     console.log(`%c[${time()}] %c[SUCCESS] %c[${file}]: [${type}]: ${job} RETURN: %c[${value}]`,timer, green, text, green )
 }

@@ -25,7 +25,6 @@ export async function renderLibrary() {
 
     const libraryBody = document.createElement("div")
     libraryBody.id = "library-body"
-    console.log("LIB CONTAINER",skeleton.library.libraryBody)
     register("library", "libraryBody", libraryBody)
 
 
