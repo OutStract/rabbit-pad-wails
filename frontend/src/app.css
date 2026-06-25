@@ -327,6 +327,7 @@ hr {
 .left-header-btn {
     display: flex;
     justify-content: center;
+    border-bottom: var(--border-color);
 }
 
 .container-left{
@@ -345,10 +346,6 @@ hr {
 
 .project-title{
     margin: 0;
-    border-bottom: var(--border-color);
-}
-
-.left-header-btn{
     border-bottom: var(--border-color);
 }
 
@@ -372,8 +369,6 @@ hr {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-
-
 }
 
 .invalid-name{
@@ -411,6 +406,42 @@ hr {
 .tree-cell-selected {
     background-color: var(--selected);
     border-radius: var(--selected-radius);
+}
+
+
+#left-footer{
+    display: flex;
+    gap: var(--padding-min);
+    border-top: var(--border-color);
+    height: 38px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 var(--padding-min);
+}
+
+#footer-name-block{
+    border: var(--border-color);
+    border-radius: 6px;
+    padding: 2px 8px;
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+}
+
+.settings-icon{
+  
+}
+
+#footer-name-block:hover{
+    background-color: var(--cell-hover);
+}
+
+.fold-icon{
+    font-size: 20px;
+}
+
+.project-name-element{
+    margin: 0;
 }
 
 

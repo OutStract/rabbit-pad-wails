@@ -8,6 +8,7 @@ import { getName } from '../../Labours/splitLabour'
 
 export function renderLibraryTree() {
     
+    console.log("libraryTreeContainer",skeleton.library.libraryTreeContainer)
     const libraryBody = get("libraryTree.js","library", "libraryBody")
     
     const libraryTreeContainer = document.createElement("div");
@@ -23,6 +24,7 @@ export function renderLibraryTree() {
 async function loadLibraryTree () {
 
     const container = get("libraryTree.js function: loadLibraryTree","library", "libraryTreeContainer")
+    console.log("Container", container)
 
     const newProjectBlock = document.createElement("div");
     newProjectBlock.id = "new-project-block"

@@ -5,9 +5,17 @@ import {logger} from '/src/logs/logger.js'
 
 export const events = {
     app: {
-        reload: "reload-app-startup",
-        fileTree: "update-file-tree",
-        result: "result"
+        req: {
+            reload: "reload-app-startup",
+            fileTree: "update-file-tree",
+            result: "result",
+            updateLib: "update-lib-config",
+            cleanLib: "clean-library-config"
+        },
+        res: {
+            libUpdated: "lib-config-update",
+            libConfigFound: "lib-config-found"
+        }
     },
     project: {
         req: {

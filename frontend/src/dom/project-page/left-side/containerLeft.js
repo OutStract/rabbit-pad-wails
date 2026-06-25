@@ -6,6 +6,7 @@ import {register, get} from '/src/appstate/skeleton.js'
 import { renderProjectTree } from "./projectTree";
 import { renderLeftToolBar } from "./leftToolBar";
 import { renderLeftHeader } from "./leftHeader";
+import { projectFooter } from './leftFooter';
 
 
 export async function renderLeftSide() {
@@ -16,9 +17,6 @@ export async function renderLeftSide() {
         const containerLeft = document.createElement("div");
         containerLeft.classList.add("container-left");
         register("leftSide", "containerLeft", containerLeft)
-
-        
-        
         
         //Appending to home container
         homeBody.appendChild(containerLeft);
@@ -33,6 +31,7 @@ export async function renderLeftSide() {
         renderLeftHeader()
         renderProjectTree();
         renderLeftToolBar()
+        projectFooter()
 
     
 

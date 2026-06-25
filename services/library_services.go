@@ -225,7 +225,7 @@ func (l *LibraryServices) LoadLibConfig (libPath string) (string, bool) {
 	LogSuccess("[LibraryServices]","Config file read Successfully")
 
 	var ActiveProj struct {
-		LastOpendProject string `json:"lastOpenedProject"`
+		LastOpenedProject string `json:"lastOpenedProject"`
 	}
 	if err := json.Unmarshal(configBytes, &ActiveProj); err != nil {
 		LogError("[LibraryServices]","There was a problem in unmarshalling the config file:", err)
@@ -235,12 +235,12 @@ func (l *LibraryServices) LoadLibConfig (libPath string) (string, bool) {
 	LogSuccess("[LibraryServices]","Config file unmarshaled Successfully")
 
 	LogInfo("[LibraryServices]","User config Directory is", ConfigLoc)
-	message := ActiveProj.LastOpendProject
+	message := ActiveProj.LastOpenedProject
 	if l.Ctx != nil {
 		runtime.EventsEmit(l.Ctx, "lib-config-found", message)
 		LogInfo("[LibraryServices]","Config file data emitted", message)
     }
-	return ActiveProj.LastOpendProject, true
+	return ActiveProj.LastOpenedProject, true
 
 
 }

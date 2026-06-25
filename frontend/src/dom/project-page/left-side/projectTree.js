@@ -76,6 +76,7 @@ ON(events.app.fileTree,{callback: wrapper})
 
 
 async function wrapper() {
+    
     const nodes = await projectServices.PROJECT_TREE("projectTree.js" ,appstate.project.path)
     const projectNodesContainer = get("projectTree.js", "leftSide", "projectNodesContainer")
     newFileTree(nodes, projectNodesContainer) 
@@ -98,6 +99,9 @@ let lastClickedCell = null;
 async function newFileTree(nodes, container) {
 
     container.replaceChildren()
+
+    console.log("NODES", nodes)
+    console.log("PROJECT PATH",appstate.project.path)
 
     
 
