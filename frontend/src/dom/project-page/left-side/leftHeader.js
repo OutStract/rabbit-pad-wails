@@ -29,7 +29,8 @@ export async function renderLeftHeader () {
         newFileBtnIcon.classList.add("material-symbols-outlined")
         newFileBtnIcon.textContent = "add_notes"
         newFileBtnIcon.addEventListener('click', async () => {
-            await fileServices.CREATE_FILE("leftHeader.js",appstate.project.path)
+            const result = await fileServices.CREATE_FILE("leftHeader.js",appstate.project.path)
+            emit(events.app.req.result, result)
         })
         newFileBtn.append(newFileBtnIcon)
 
@@ -38,7 +39,8 @@ export async function renderLeftHeader () {
         newFolderBtnIcon.classList.add("material-symbols-outlined")
         newFolderBtnIcon.textContent = "create_new_folder"
         newFolderBtnIcon.addEventListener('click', async () => {
-            await fileServices.CREATE_FOLDER("leftHeader.js",appstate.project.path)
+            const result = await fileServices.CREATE_FOLDER("leftHeader.js",appstate.project.path)
+            emit(events.app.req.result, result)
         })
         newFolderBtn.append(newFolderBtnIcon)
         

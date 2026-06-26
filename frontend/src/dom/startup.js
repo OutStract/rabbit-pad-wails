@@ -7,6 +7,7 @@ import {events, emit} from '/src/events/events.js'
 import { OpenDirectory } from '../../wailsjs/go/services/DialogServices.js';
 
 export function renderStartUp () {
+    console.log("STARTUP SUCCESS")
     const app = get("startup.js","app", "app")
     //Welcome container
     const welcome = document.createElement("div");

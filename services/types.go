@@ -14,3 +14,8 @@ type Library struct {
 type LibraryState struct {
     LastOpendProject string `json:"lastOpenedProject"`
 }
+
+type Payload struct {
+    Success bool `json:"success"`
+    Data string `json:"data"`
+}

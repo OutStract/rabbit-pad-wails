@@ -148,7 +148,7 @@ async function makeProject (fileName, libraryPath, projectName) {
 
         const result = await MakeProject(libraryPath, projectName)
 
-        logger.INFO("COMPLETED", fileName, "Project is created", result, performance.now() - start)
+        logger.INFO("COMPLETED", fileName, "Project is created", "result", performance.now() - start)
         return result
     }
     catch(err) {
@@ -164,7 +164,7 @@ async function projectTree (fileName, libraryPath, projectName) {
 
         const result = await ProjectTree(libraryPath, projectName)
 
-        logger.INFO("COMPLETED", fileName, "Project is created", result, performance.now() - start)
+        logger.INFO("COMPLETED", fileName, "Project is created", "result", performance.now() - start)
         return result
     }
     catch(err) {
@@ -196,7 +196,7 @@ async function createFile (fileName, projectPath) {
 
         return {
             success: false,
-            data: err,
+            data: "",
             message: "Unable to create file"
         }
     }
@@ -220,12 +220,6 @@ async function readFile (fileName, filePath) {
     }
     catch(err) {
         logger.ERROR(err)
-
-        return {
-            success: false,
-            data: err,
-            message: "Unable to read file"
-        }
     }
 }
 

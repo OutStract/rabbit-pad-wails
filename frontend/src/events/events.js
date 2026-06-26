@@ -6,7 +6,7 @@ import {logger} from '/src/logs/logger.js'
 export const events = {
     app: {
         req: {
-            reload: "reload-app-startup",
+            restart: "reload-startup",
             fileTree: "update-file-tree",
             result: "result",
             updateLib: "update-lib-config",
@@ -72,15 +72,15 @@ export function onPayload(event, {callback}) {
 /*======= FRONTEND EVENTS ========*/
 
 EventsOn("open-project", (message) => {
-    logger.INFO("OPEN PROJECT EVENT", "events.js", "Project is opend", message, null)
+    logger.INFO("OPEN PROJECT EVENT", "events.js", "Project is opend", "message", null)
 })
 
 EventsOn("close-project", (message) => {
-    logger.INFO("PROJECT EVENT", "events.js", "Project Closed", message, null)
+    logger.INFO("PROJECT EVENT", "events.js", "Project Closed", "message", null)
 })
 
 EventsOn("new-project", (message) => {
-    logger.INFO("PROJECT EVENT", "events.js", "Create Project", message, null)
+    logger.INFO("PROJECT EVENT", "events.js", "Create Project", "message", null)
 })
 
 // EventsOn("read-file", (payload) => {
@@ -135,7 +135,7 @@ EventsOn("lib-config-update", (message) => {
 /*======= PROJECT SERVICES ========*/
 
 EventsOn("project-created", (message) => {
-    logger.INFO("PROJECT EVENT", "events.js", "Project Created", message, null)
+    logger.INFO("PROJECT EVENT", "events.js", "Project Created", "message", null)
     appstate.project.newProjectPath = message
     const payload = {
         source: "events.js",
@@ -146,18 +146,14 @@ EventsOn("project-created", (message) => {
 
 EventsOn("project-tree", (message) => {
     appstate.project.tree = message
-    logger.INFO("PROJECT EVENT", "events.js", "Project tree", message, null)
+    logger.INFO("PROJECT EVENT", "events.js", "Project tree", 'message', null)
 })
 
 /*======= FILE SERVICES ========*/
 
 EventsOn("file-created", (message) => {
-    const payload = {
-        source: "events.js",
-        data: null,
-    }
-    appstate.file.newFilePath = message
-    emit(events.file.res.created, payload)
+    appstate.file.newFilePath = message.data
+    emit(events.file.res.created, message)
     logger.INFO("FILE EVENT", "events.js", "File Created", message, null)
 })
 

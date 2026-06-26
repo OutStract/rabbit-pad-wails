@@ -28,6 +28,8 @@ async function readFile() {
     try {
         const content = await fileServices.READ_FILE("codemirror.js", filePath)        
         // Safety check to ensure view exists before trying to assign state
+        if(!content) return
+        
         if (view) {
             view.setState(EditorState.create({
                 doc: content.data || "",

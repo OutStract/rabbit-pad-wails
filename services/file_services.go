@@ -16,7 +16,7 @@ type FileServices struct {
 	Ctx context.Context
 }
 
-func (f *FileServices) CreateFile(ProjectPath string) {
+func (f *FileServices) CreateFile(ProjectPath string) (string, error) {
 	
 	count := 0
 	filePath := filepath.Join(ProjectPath, fmt.Sprintf("%d-untitled.md", count))
@@ -38,18 +38,23 @@ func (f *FileServices) CreateFile(ProjectPath string) {
 	id, err := uuid.NewV7()
 	if err != nil {
 		LogError("[FileService]", "There is a problem in making the file ID")
+		return "", errors.New("Problem in adding id in the file")
 	}
 
 	data := []byte(fmt.Sprintf("<--!%s-->\n", id.String()))
 
 	err = os.WriteFile(filePath, data, 0644)
 
-	message := filePath
+	message := Payload {
+		Success: true,
+		Data: filePath,
+	}
 	if f.Ctx != nil {
 		runtime.EventsEmit(f.Ctx, "file-created", message)
 		LogInfo("[FileService]","Create File Process ended", filePath)
     }
 
+	return "File created success fully", nil
 }
 
 func (f *FileServices) ReadFile(FilePath string) (string, error) {
@@ -59,7 +64,7 @@ func (f *FileServices) ReadFile(FilePath string) (string, error) {
 
 	if err != nil {
 		LogError("[FileServices]", "There was problem in opening the file", err)
-		return "", err
+		return "", errors.New("File doesn't exist")
 	}
 
 	ReadContent := string(content)
@@ -102,7 +107,7 @@ func (f *FileServices) WriteFile(content, path string) {
 
 }
 
-func (f *FileServices) MoveFile (destination, source, name string) (string, error) {
+func (f *FileServices) MoveFile(destination, source, name string) (string, error) {
 
 	dest := destination
 	src := source
@@ -113,13 +118,13 @@ func (f *FileServices) MoveFile (destination, source, name string) (string, erro
 
 	if err == nil {
 		LogError("[FileServices]", "File already exist in the destination path", err)
-		return "File with same name already exist in the destination folder", errors.New("File with same name already exist in the destination folder")
+		return "", errors.New("File with same name already exist in the destination folder")
 	}
 
 	err = os.Rename(src, destinationPath)
 	if err != nil {
 		LogError("[FileServices]", "There was problem in moving the file", err)
-		return "There was a problem in moving the file", err
+		return "", err
 	}
 
 	message := dest
@@ -208,7 +213,10 @@ func (f *FileServices) CreateFolder(ProjectPath string) {
 		LogError("[FileServices]", "There was a error in creating the folder", err)
 	}
 
-	message := FolderPath
+	message := Payload {
+		Success: true,
+		Data: FolderPath,
+	}
 	if f.Ctx != nil {
 		runtime.EventsEmit(f.Ctx, "folder-created", message)
 		LogInfo("[FileService]","Create File Process ended", FolderPath)

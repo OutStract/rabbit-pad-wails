@@ -15,9 +15,11 @@ ON(events.project.req.open, {callback: renderProjectContainer})
 
 export function renderProjectContainer() {
 
+        console.log("PROJECT CONTAINER SUCCESS")
+
         const app = get("projectContainer.js","app", "app")
         console.log(app)
-        app.innerHTML = ""
+        app.replaceChildren()
     
         // Home Container
         const projectContainer = document.createElement("div");

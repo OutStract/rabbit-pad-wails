@@ -11,6 +11,8 @@ import { projectFooter } from './leftFooter';
 
 export async function renderLeftSide() {
 
+    console.log("PROJECT TREE SUCCESS 1")
+
     const homeBody = get( "containerLeft.js","app", "projectBody")
 
         // Left side container

@@ -24,6 +24,7 @@ import './Labours/messageLabour'
 
 
 async function startUpCheck() {
+    console.trace("MAIN JS SUCCESS")
         // Checking for active library in the configurations file
         const configCheck = await startUpServices.CHECK_CONFIG("main.js")
         if (!configCheck) {
@@ -50,4 +51,4 @@ startUpCheck()
 
 /*========= EVENTS ===========*/
 
-ON(events.app.reload, {callback: startUpCheck})
+ON(events.app.restart, {callback: startUpCheck})

@@ -5,9 +5,10 @@ import { get } from '/src/appstate/skeleton.js'
 import { cleanName, getBasePath, getName, updateFilePath } from './splitLabour'
 import { onPayload } from '../events/events'
 
-const payload = {
-    source: "fileLabours"
+let payload = {
+    success: false
 }
+
 
 function updateTree() {
     emit(events.app.fileTree, payload)
@@ -38,7 +39,9 @@ async function deleteFile() {
         const sourceName = getName(oldPath)
         localStorage.removeItem(oldPath)
         localStorage.removeItem(projectPath)
-        await fileServices.DELETE_FILE("projectTree.js", projectPath, oldPath, sourceName)
+        const result = await fileServices.DELETE_FILE("projectTree.js", projectPath, oldPath, sourceName)
+        payload.success = result.success
+        emit(events.app.req.result, result)
         console.log("DELETE 3.5", appstate.file.path)
     }
     updateTree()
@@ -92,7 +95,7 @@ function renameFile() {
     
     const fileObject = parentObj.children.filter(child => child.path == lastFilePath)[0]
     // Removing listener from the cell
-    emit(events.file.req.cellListener, payload)
+    // emit(events.file.req.cellListener, payload)
     nameInput.addEventListener('input', (event) => {
 
         // Getting user input for checking
@@ -135,7 +138,7 @@ function renameFile() {
                 renamingCell.removeChild(nameInput)
                 renamingCell.append(nodeName)
                 nodeName.textContent = oldFileName
-                emit(events.file.req.cellListener, payload)
+                // emit(events.file.req.cellListener, payload)
                 updateTree()
                 return
             }
@@ -147,14 +150,16 @@ function renameFile() {
             renamingCell.classList.remove('invalid-name')
 
                 
-            fileServices.RENAME_FILE("projectTree.js", lastFilePath, fileParent, newName )
+            const result = fileServices.RENAME_FILE("projectTree.js", lastFilePath, fileParent, newName )
+            payload.success = result.success
                 renamingCell.removeChild(nameInput)
                 renamingCell.append(nodeName)
-                emit(events.file.req.cellListener, payload)
+                // emit(events.file.req.cellListener, payload)
                 const newPath = updateFilePath(fileParent, newName)
                 localStorage.setItem(appstate.project.path, newPath)
                 console.log("FILE 1", appstate.file.name ,appstate.file.path)
                 updateTree()
+                emit(events.app.req.result, result)
         }
     }
 
