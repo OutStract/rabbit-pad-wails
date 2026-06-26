@@ -3,6 +3,7 @@ import { fileServices } from '/src/api/api.js'
 import {events, emit, ON} from '/src/events/events.js'
 import { get } from '/src/appstate/skeleton.js'
 import { cleanName, getBasePath, getName, updateFilePath } from './splitLabour'
+import { onPayload } from '../events/events'
 
 const payload = {
     source: "fileLabours"
@@ -18,6 +19,14 @@ const selection = appstate.selectionList
 
 ON(events.file.req.delete, {callback: deleteFile})
 async function deleteFile() {
+
+
+    if(!selection.size) {
+        console.log("DELETE DATA", !selection)
+        return
+    }
+
+
     const projectPath = appstate.project.path
     console.log("DELETE 2", appstate.file.path)
 

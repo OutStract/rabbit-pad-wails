@@ -4,10 +4,12 @@ import {appstate} from '/src/appstate/appstate.js'
 import { libraryServices } from '/src/api/api.js'
 
 import { codeMirror } from './codeMirror.js'
+import { onPayload } from '../../../events/events.js'
 
 ON(events.file.req.delete, {callback: cleanMiddleBody})
 
 function cleanMiddleBody () {
+
     const middleBodyMessage = document.createElement('div')
     middleBodyMessage.textContent = "No File is opened"
 

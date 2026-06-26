@@ -1,7 +1,11 @@
 import {events, emit} from '/src/events/events.js'
+import { appstate } from '/src/appstate/appstate'
 
 const payload = {
-    source: "shortcuts"
+    source: "shortcuts",
+    data: {
+        selections: appstate.file.selectionList
+    }
 }
 
 window.addEventListener('keydown', (event) => {

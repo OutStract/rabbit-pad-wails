@@ -49,7 +49,7 @@ async function loadLibraryTree () {
     container.append(newProjectBlock)
 
     const libRoot = appstate.library.path
-    const nodes = await libraryServices.LIB_TREE("main.js",libRoot)
+    const nodes = appstate.library.tree
     nodes.forEach(node => {
 
         const libraryNode = document.createElement("div")

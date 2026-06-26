@@ -33,6 +33,7 @@ async function startUpCheck() {
 
         // Followiing the active library path then goes to check if the library config has active project
         const projectConfig = await libraryServices.LOAD_LIB_CONFIG("main.js",configCheck)
+        const libraryTree = await libraryServices.LIB_TREE("main.js",appstate.library.path)
 
         if(!projectConfig) {
             renderLibrary()

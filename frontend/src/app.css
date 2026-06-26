@@ -411,26 +411,30 @@ hr {
 
 #left-footer{
     display: flex;
-    gap: var(--padding-min);
     border-top: var(--border-color);
-    height: 38px;
-    align-items: center;
+    height: fit-content;
+    max-height: 26px;
+    padding: var(--padding-min);
+}
+
+
+.footer-content{
+    display: flex;
+    align-items: end;
     justify-content: space-between;
-    padding: 0 var(--padding-min);
+    gap: var(--padding-min);
+    flex: 1;
+    z-index: 20;
 }
 
 #footer-name-block{
-    border: var(--border-color);
-    border-radius: 6px;
-    padding: 2px 8px;
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    flex: 1;
+    width: 100%;
 }
 
-.settings-icon{
-  
-}
+
 
 #footer-name-block:hover{
     background-color: var(--cell-hover);
@@ -441,7 +445,23 @@ hr {
 }
 
 .project-name-element{
-    margin: 0;
+    margin: 2px 4px;
+}
+
+
+
+.expanded-project-list{
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border: var(--border-color);
+    border-radius: 6px;
+    flex: 1;
+}
+
+.expanded-list-container{
+    width: 100%;
+    
 }
 
 

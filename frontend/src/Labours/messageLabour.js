@@ -5,7 +5,7 @@ onPayload(events.app.result, {callback: userMessage})
 
 export function userMessage(payload) {
 
-    if(payload.success) {
+    if(payload.success || !payload.data) {
         return
     }
     const app = get("messageLabour.js", "app", "app")
