@@ -357,11 +357,13 @@ hr {
 .project-container{
     display: flex;
     flex-direction: column;
-    flex: 1
+    flex: 1;
+    overflow: scroll;
 }
 #project-nodes-container{
     flex: 1;
     padding: var(--padding-min);
+    
 }
 .node-name{
     margin: 0;

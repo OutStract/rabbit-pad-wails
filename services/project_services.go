@@ -103,7 +103,7 @@ func (p *ProjectServices) ProjectTree (projectRoot string) []ProjectNode  {
 	message := projectTree
 	if p.Ctx != nil {
 		runtime.EventsEmit(p.Ctx, "project-tree", message)
-		LogInfo("[ProjectServices]", "EVENT EMIT Project Read successfully", message)
+		LogInfo("[ProjectServices]", "EVENT EMIT Project Read successfully")
     }
 	return projectTree
 }

@@ -79,7 +79,7 @@ export function emit(event, payload) {
     if(!validEvents.has(event)) {
         throw new Error(`Unknown Event: ${event}`);
     }
-    console.log("Event emitted", event, "from", payload.source)
+    console.trace("Event emitted", event, "from", payload.source)
     EventsEmit(event, payload)
 }
 

@@ -117,7 +117,7 @@ func (f *FileServices) MoveFile(destination, source, name string) (string, error
 	_, err := os.Stat(destinationPath) 
 
 	if err == nil {
-		LogError("[FileServices]", "File already exist in the destination path", err)
+		LogError("[FileServices]", "File already exist in the destination path", destinationPath)
 		return "", errors.New("File with same name already exist in the destination folder")
 	}
 
@@ -127,13 +127,17 @@ func (f *FileServices) MoveFile(destination, source, name string) (string, error
 		return "", err
 	}
 
-	message := dest
+	message := Payload {
+		Success: true,
+		Data: destinationPath,
+	}
+
 	if f.Ctx != nil {
 		runtime.EventsEmit(f.Ctx, "file-moved", message)
 		LogInfo("[FileService]","File moved successfully", message)
     }
 
-	return "File moved successfully", nil
+	return destinationPath, nil
 
 }
 

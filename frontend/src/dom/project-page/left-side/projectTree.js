@@ -36,35 +36,35 @@ export async function renderProjectTree() {
             event.preventDefault()
         })
 
-        projectNodesContainer.addEventListener('drop', rootDrop)
+        projectNodesContainer.addEventListener('drop', dropHandler)
         
 
-        async function rootDrop(event) {
-            event.preventDefault(); // Prevent browser from opening the file/link
-            event.stopPropagation(); // Stop it from bubbling up to parent folders
-                const dropPath = event.currentTarget.dataset
-                if(dropPath.isFolder) {
-                    for(const oldPath of selection) {
-                        const sourceName = getName(oldPath)
-                        const localPath = localStorage.getItem(appstate.project.path)
+        // async function rootDrop(event) {
+        //     event.preventDefault(); // Prevent browser from opening the file/link
+        //     event.stopPropagation(); // Stop it from bubbling up to parent folders
+        //         const dropPath = event.currentTarget.dataset
+        //         if(dropPath.isFolder) {
+        //             for(const oldPath of selection) {
+        //                 const sourceName = getName(oldPath)
+        //                 const localPath = localStorage.getItem(appstate.project.path)
 
-                        if(localPath) {
-                            const localName = getName(localPath)
-                            if(sourceName === localName) {
-                                const newPath = updateFilePath(dropPath.path, sourceName)
-                                localStorage.setItem(appstate.project.path, newPath)
-                            }
-                        }
-                        const result = await fileServices.MOVE_FILE("projectTree.js", dropPath.path, oldPath, sourceName)
-                        selection.delete(oldPath)
-                        console.log("SUCCESS MESSAGE",result.success)
-                            emit(events.app.req.result, result)
-                    }
-                }
-            isListener = true
-            projectNodesContainer.removeEventListener('drop', rootDrop)
-            projectNodesContainer.addEventListener('drop', rootDrop)
-        }
+        //                 if(localPath) {
+        //                     const localName = getName(localPath)
+        //                     if(sourceName === localName) {
+        //                         const newPath = updateFilePath(dropPath.path, sourceName)
+        //                         localStorage.setItem(appstate.project.path, newPath)
+        //                     }
+        //                 }
+        //                 const result = await fileServices.MOVE_FILE("projectTree.js", dropPath.path, oldPath, sourceName)
+        //                 selection.delete(oldPath)
+        //                 console.log("SUCCESS MESSAGE",result.success, result)
+        //                     emit(events.app.req.result, result)
+        //             }
+        //         }
+        //     isListener = true
+        //     projectNodesContainer.removeEventListener('drop', rootDrop)
+        //     projectNodesContainer.addEventListener('drop', rootDrop)
+        // }
 
         register("leftSide", "projectNodesContainer", projectNodesContainer)
 
@@ -86,7 +86,7 @@ export async function renderProjectTree() {
 
 onPayload(events.file.res.created,{callback: wrapper})
 onPayload(events.folder.res.created,{callback: wrapper})
-onPayload(events.file.res.moved,{callback: wrapper})
+// onPayload(events.file.res.moved,{callback: wrapper})
 onPayload(events.app.req.fileTree,{callback: wrapper})
 
 
@@ -246,41 +246,6 @@ async function newFileTree(nodes, container) {
         })
 
         treeCell.addEventListener('drop',  dropHandler)
-
-        async function dropHandler(event) {
-
-            event.preventDefault(); // Prevent browser from opening the file/link
-            event.stopPropagation(); // Stop it from bubbling up to parent folders
-                const dropPath = event.currentTarget.dataset
-
-                if(dropPath.isFolder === "true") {
-                    
-                    for(const oldPath of selection) {
-                        const sourceName = getName(oldPath)
-                        console.log("NEW SELECTION FILE TREE", selection)
-
-                        const localPath = localStorage.getItem(appstate.project.path)
-                        console.log("MOVE 1", localPath)
-
-                        if(localPath) {
-                            const localName = getName(localPath)
-                            if(sourceName === localName) {
-                                const newPath = updateFilePath(dropPath.path, sourceName)
-                                localStorage.setItem(appstate.project.path, newPath)
-                            }
-                        } 
-
-                        const result = await fileServices.MOVE_FILE("projectTree.js", dropPath.path, oldPath, sourceName)
-                        selection.delete(oldPath)
-                        emit(events.app.req.result, result)
-                        console.log("NEW FILE TREE", result)
-                    }
-                }
-            isListener = true
-                console.log("NEW FILE TREE 0")
-            treeCell.removeEventListener('drop', dropHandler)
-            treeCell.addEventListener('drop',  dropHandler)
-        }
         
         
         name.dataset.path = node.path
@@ -372,7 +337,49 @@ async function newFileTree(nodes, container) {
 
         selection.add(lastOpenedFile)
         const selectionCell = rootTreeContainer.querySelector(`[data-path = "${CSS.escape(lastOpenedFile)}"]`)
+        if(!selectionCell) return
         selectionCell.classList.add("tree-cell-selected")
         console.log("FILE 4", appstate.file.name ,appstate.file.path)
     }
+}
+
+
+async function dropHandler(event) {
+
+    event.preventDefault(); // Prevent browser from opening the file/link
+    event.stopPropagation(); // Stop it from bubbling up to parent folders
+        const dropPath = event.currentTarget.dataset
+        let results = null
+
+        if(dropPath.isFolder === "true") {
+
+            console.log("BEFORE DROP SELECTION", [...selection])
+            
+            for(const oldPath of selection) {
+                const sourceName = getName(oldPath)
+                console.log("NEW SELECTION FILE TREE", selection)
+
+                const localPath = localStorage.getItem(appstate.project.path)
+                console.log("MOVE 1", localPath)
+
+                if(localPath) {
+                    const localName = getName(localPath)
+                    if(sourceName === localName) {
+                        const newPath = updateFilePath(dropPath.path, sourceName)
+                        localStorage.setItem(appstate.project.path, newPath)
+                    }
+                } 
+
+                const result = await fileServices.MOVE_FILE("projectTree.js", dropPath.path, oldPath, sourceName)
+                selection.delete(oldPath)
+                emit(events.app.req.result, result)
+                results = result
+                console.log("NEW FILE TREE", result.data)
+            }
+        }
+    isListener = true
+    this.removeEventListener('drop', dropHandler)
+    this.addEventListener('drop',  dropHandler)
+    emit(events.app.req.fileTree, results)
+    console.log("AFTER DROP SELECTION", [...selection])
 }

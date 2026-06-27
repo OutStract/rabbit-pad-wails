@@ -11,7 +11,7 @@ let payload = {
 
 
 function updateTree() {
-    emit(events.app.fileTree, payload)
+    emit(events.app.req.fileTree, payload)
 
 }
 
