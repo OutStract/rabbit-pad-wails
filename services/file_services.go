@@ -139,7 +139,6 @@ func (f *FileServices) MoveFile(destination, source, name string) (string, error
 
 func (f *FileServices) DeleteFile (ProjectPath, FilePath, FileName string) (string, error) {
 	// Take the file name and make the delete path
-	LogInfo("[FileService]","File deleted successfully", FilePath)
 	count := 0
 	TrashLoc := filepath.Join(ProjectPath, ".trash")
 	destination := filepath.Join(TrashLoc, fmt.Sprintf("%d-%s", count, FileName))

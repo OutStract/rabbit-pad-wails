@@ -52,18 +52,60 @@ export const events = {
     }
 }
 
+function flatten(obj, out = new Set()) {
+    // Taking a JS object and a empty set
+    for(const value of Object.values(obj)) {
+        // Read all the values inside the object Events
+        // Check if the value is a string 
+        // like an event string, and not another object
+        if(typeof value === "string") {
+            // add the value inside the set
+            out.add(value)
+        } else {
+            // Take the object value and run recursively
+            flatten(value, out)
+        }
+    }
+    // Return the set after all the values are init
+    return out
+}    
+
+const validEvents = flatten(events)
+
 export function emit(event, payload) {
-    // console.log("Event emitted", event, "from", payload.source)
+    if(typeof event !== "string") {
+        throw new Error(`Invalid Event type:${event}`)
+    }
+    if(!validEvents.has(event)) {
+        throw new Error(`Unknown Event: ${event}`);
+    }
+    console.log("Event emitted", event, "from", payload.source)
     EventsEmit(event, payload)
 }
 
 export function ON(event, {callback}) {
+
+    if(typeof event !== "string") {
+        throw new Error(`Invalid Event type:${event}`)
+    }
+    if(!validEvents.has(event)) {
+        throw new Error(`Unknown Event: ${event}`);
+    }
+
     EventsOn(event,  () => {
         callback()
     })
 }
 
 export function onPayload(event, {callback}) {
+
+    if(typeof event !== "string") {
+        throw new Error(`Invalid Event type:${event}`)
+    }
+    if(!validEvents.has(event)) {
+        throw new Error(`Unknown Event: ${event}`);
+    }
+
     EventsOn(event,  (payload) => {
         callback(payload)
     })

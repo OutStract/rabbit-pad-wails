@@ -44,7 +44,7 @@ export function renderHeader() {
 }
 
 ON(events.file.req.read, {callback: fileName})
-ON(events.app.fileTree, {callback: fileName})
+ON(events.app.req.fileTree, {callback: fileName})
 
 function fileName() {
     const fileNameContainer = get("header.js", "header", "fileNameContainer")

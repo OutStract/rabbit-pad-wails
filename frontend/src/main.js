@@ -51,4 +51,4 @@ startUpCheck()
 
 /*========= EVENTS ===========*/
 
-ON(events.app.restart, {callback: startUpCheck})
+ON(events.app.req.restart, {callback: startUpCheck})
