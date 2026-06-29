@@ -1,14 +1,5 @@
 import { EventsOn, EventsEmit } from '../../wailsjs/runtime/runtime';
-
-
-interface Payload {
-    id: string;
-    success: boolean;
-    action: string;
-    error: unknown;
-    message: string;
-    data: unknown;
-}
+import { Payload } from '../types/payload';
 
 class Appstate {
     libraryPath = "";

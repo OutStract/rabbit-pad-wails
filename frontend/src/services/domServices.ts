@@ -25,7 +25,7 @@ export class Dom {
         element.dataset.placement = data.placement ?? ""
         element.dataset.area = data.area ?? ""
         element.dataset.type = data.type ?? ""
-        element.dataset.text = data.text ?? ""
+        element.innerText = data.text ?? ""
         element.dataset.draggable = data.draggable ?? "false"
         element.dataset.focus = data.focus ?? "false"
         element.dataset.path = data.path ?? ""

@@ -23,51 +23,40 @@ func (s *StartUpServices) StartUpManager(LibName,LibPath string) string {
 
 
 
-func (s *StartUpServices) ConfigCheck() (string, bool) {
+func (s *StartUpServices) ConfigCheck() Payload {
 	configDir, err := os.UserConfigDir()
 
 	if err != nil {
 		LogError("[StartUpServices]","There was a problem in getting config directory:", err)
+		
 	}
 	configPath := filepath.Join(configDir, "rabbitpad", "config.json")
-
-	LogSuccess("[StartUpServices]","Config directory loaded successfully")
 
 	_, err = os.Stat(configPath)
 
 	if err != nil {
 		LogError("[StartUpServices]","There was a problem confirming config file", err)
-		return "", false
+		return failure("Startup Services: Config Check", "CONFIG_CHECK", "There was a problem confirming config file", err)
 	}
-
-	LogSuccess("[StartUpServices]","Config file confirmed Successfully")
 
 	configBytes, err := os.ReadFile(configPath)
 
 	if err != nil {
 		LogError("[StartUpServices]","There was a problem reading config file", err)
-		return "", false
+		return failure("Startup Services: Config Check", "CONFIG_CHECK", "There was a problem reading config file", err)
 	}
-
-	LogSuccess("[StartUpServices]","Config file read Successfully")
 
 	var activeLib struct {
 		ActiveLibrary string `json:"activeLibrary"`
 	}
 	if err := json.Unmarshal(configBytes, &activeLib); err != nil {
-		LogError("[StartUpServices]","There was a problem in unmarshalling the config file:", err)
-		return "", false
+		LogError("[StartUpServices]","There was a problem in unmarshaling the config file:", err)
+		return failure("Startup Services: Config Check", "CONFIG_CHECK", "There was a problem unmarshaling the config file", err)
 	}
 
-	LogSuccess("[StartUpServices]","Config file unmarshaled Successfully")
-
 	LogInfo("[StartUpServices]","User config Directory is", configPath)
-	message := activeLib.ActiveLibrary
-	if s.Ctx != nil {
-		runtime.EventsEmit(s.Ctx, "RABBIT_CONFIG_CHECK", message)
-		LogInfo("[StartUpServices]","Config file data emitted")
-    }
-	return success("")
+
+	return success("Startup Services: Config Check", "CONFIG_CHECK", "Checking user config", activeLib.ActiveLibrary)
 
 }
 
@@ -193,7 +182,7 @@ func (s *StartUpServices) UpdateConfig(LibName, LibPath string) {
 
 	if err != nil {
 		LogError("[StartUpServices]","There was a problem in updaing the config file:", err)
-		return
+		return 
 	}
 
 	LogSuccess("[StartUpServices]","Config have been updated successfully", configPath)

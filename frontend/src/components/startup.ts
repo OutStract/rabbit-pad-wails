@@ -1,21 +1,36 @@
-import { dom } from "../main"
-class StartupView{
+
+// import { dom } from "../main"
+import { Dom } from '../services/domServices';
+import { startupServices, StartUpServices } from '../services/startupServices';
+
+
+export class StartupView{
+    constructor(
+        private dom: Dom
+    ) {}
     view() {
-        const startupView = dom.createElement({
+        const welcome = this.dom.createElement ({
+            tag: "div",
+            className: "welcome",
+            id: "welcome",
+            parent: "#app"
+        })
+        const startupView = this.dom.createElement({
             tag: "div",
             className: "startup",
             name: "Startup Container",
-            parent: "#app"
+            parent: "#welcome"
         })
+        console.log(startupView)
 
-        const logoContainer = dom.createElement({
+        const logoContainer = this.dom.createElement({
             tag: "div",
             className: "logo",
             id: "logo",
             parent: ".startup"
         })
 
-        const logo = dom.createGraphic({
+        const logo = this.dom.createGraphic({
             tag: "img",
             className: "logo-graphic",
             src: "/src/assets/images/logo.svg",
@@ -23,7 +38,7 @@ class StartupView{
             parent: "#logo"
         })
 
-        const rightSide = dom.createElement({
+        const rightSide = this.dom.createElement({
             tag: "div",
             className: "start-r-side",
             id: "start-r-side",
@@ -31,39 +46,80 @@ class StartupView{
             parent: ".startup"
         })
 
-        const name = dom.createElement({
+        const name = this.dom.createElement({
             tag: "div",
             className: "rabbit-pad",
             id: "rabbit-pad",
-            parent: "#start-r-side"
+            parent: "#start-r-side",
+            text: "Rabbit-pad"
         })
 
-        const libraryOperations = dom.createElement({
+        const libraryOperations = this.dom.createElement({
             tag: "div",
             className:"library-operations",
             id: "library-operations",
-            parent: "#right-r-side"
+            parent: "#start-r-side"
         })
 
-        const libraryName = dom.createElement({
+        const libraryName = this.dom.createElement({
             tag: "div",
             className: "msg-container",
+            id: "library-name",
             parent: "#library-operations"
         })
 
-        const message1 = dom.createElement({
+        const message1 = this.dom.createElement({
             tag: "p",
             className: "msg",
-            parent: "msg-container"
+            parent: ".msg-container",
+            text: "Enter your library name"
         })
 
-        const libraryInput = dom.createInput({
+        const libraryInput = this.dom.createInput({
             tag: "input",
             className: "lib-name-startup-input",
-            parent: "msg-container",
+            parent: "#library-name",
             placeHolder: "Library name"
         })
+
+        const libraryLocation = this.dom.createElement({
+            tag: "div",
+            className: "msg-container",
+            id: "library-location",
+            parent: "#library-operations"
+        })
+
+        const locationContainer = this.dom.createElement({
+            tag: "div",
+            className: "location-container",
+            parent: "#library-location"
+        })
+
+        const message2 = this.dom.createElement({
+            tag: "p",
+            className: "msg",
+            text: "Select library location",
+            parent: ".location-container"
+        })
+
+        const locationText = this.dom.createElement({
+            tag: "p",
+            className: "path",
+            text: "",
+            parent: ".location-container"
+        })
+
+        const libraryLocationInput = this.dom.createElement({
+            tag: "button",
+            className: "start-btn",
+            parent: "#library-location",
+            text: "Browse"
+        })
+
+        libraryLocationInput.addEventListener("click", () => {
+            const result = startupServices.openDirectory()
+        })
+
     }
 }
 
-export const startupView = new StartupView()

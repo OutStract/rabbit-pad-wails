@@ -9,7 +9,7 @@ type DialogServices struct {
 	Ctx context.Context
 }
 
-func (d *DialogServices) OpenDirectory() (string, error) {
+func (d *DialogServices) OpenDirectory() Payload {
 
 	options := runtime.OpenDialogOptions{
 		Title: "Select library directory",
@@ -19,10 +19,11 @@ func (d *DialogServices) OpenDirectory() (string, error) {
 
 	if err != nil {
 		LogError("[DialogServices]","There was a problem in getting directory path:", err)
+		failure("Dialog Services: Open Directory", "OPEN_DIRECTORY", "There was a problem in opening the directory", err )
 	}
 
-	LogSuccess("[DialogServices]", "Library Path captured succesfully")
+	LogSuccess("[DialogServices]", "Library Path captured successfully")
 
-	return dirPath, nil
+	return success("Dialog Services: Open Directory", "OPEN_DIRECTORY", "File directory dialog has got the selected path", dirPath)
 
 }

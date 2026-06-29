@@ -1,19 +1,25 @@
 export namespace services {
 	
-	export class LibraryTree {
-	    name: string;
-	    path: string;
-	    lastMod: string;
+	export class Payload {
+	    id: string;
+	    success: boolean;
+	    action: string;
+	    error: any;
+	    message: string;
+	    data: any;
 	
 	    static createFrom(source: any = {}) {
-	        return new LibraryTree(source);
+	        return new Payload(source);
 	    }
 	
 	    constructor(source: any = {}) {
 	        if ('string' === typeof source) source = JSON.parse(source);
-	        this.name = source["name"];
-	        this.path = source["path"];
-	        this.lastMod = source["lastMod"];
+	        this.id = source["id"];
+	        this.success = source["success"];
+	        this.action = source["action"];
+	        this.error = source["error"];
+	        this.message = source["message"];
+	        this.data = source["data"];
 	    }
 	}
 	export class ProjectNode {
