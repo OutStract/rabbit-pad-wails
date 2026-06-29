@@ -64,7 +64,7 @@ func (s *StartUpServices) ConfigCheck() (string, bool) {
 	LogInfo("[StartUpServices]","User config Directory is", configPath)
 	message := activeLib.ActiveLibrary
 	if s.Ctx != nil {
-		runtime.EventsEmit(s.Ctx, "startup-config-found", message)
+		runtime.EventsEmit(s.Ctx, "RABBIT_CONFIG_CHECK", message)
 		LogInfo("[StartUpServices]","Config file data emitted")
     }
 	return activeLib.ActiveLibrary, true

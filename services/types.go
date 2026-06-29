@@ -12,10 +12,20 @@ type Library struct {
 }
 
 type LibraryState struct {
-    LastOpendProject string `json:"lastOpenedProject"`
+    LastOpenedProject string `json:"lastOpenedProject"`
 }
 
 type Payload struct {
+    Id string `json:"id"`
     Success bool `json:"success"`
-    Data string `json:"data"`
+    Action string `json:"action"`
+    Error error `json:"error"`
+    Message string `json:"message"`
+    Data any `json:"data"`
 }
+
+type Settings struct {
+    Developer bool
+    Debug bool
+}
+
