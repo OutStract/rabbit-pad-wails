@@ -22,6 +22,13 @@ import './Labours/fileLabours'
 import './events/shortcuts'
 import './Labours/messageLabour'
 
+import { Dom } from './services/domServices';
+import { ConfigCheck } from '../wailsjs/go/services/StartUpServices';
+
+export const dom = new Dom(app)
+
+
+
 
 async function startUpCheck() {
     console.trace("MAIN JS SUCCESS")

@@ -67,7 +67,7 @@ func (s *StartUpServices) ConfigCheck() (string, bool) {
 		runtime.EventsEmit(s.Ctx, "RABBIT_CONFIG_CHECK", message)
 		LogInfo("[StartUpServices]","Config file data emitted")
     }
-	return activeLib.ActiveLibrary, true
+	return success("")
 
 }
 

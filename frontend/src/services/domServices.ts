@@ -1,24 +1,11 @@
+import { ElementData, GraphicElement, InputElement } from "../types/element"
 
-interface ElementData {
-    tag: string;
-    className: string;
-    name?: string;
-    placement?: string;
-    area?: string;
-    type?: string;
-    text?: string;
-    draggable?: string;
-    focus?: string;
-    path?: string;
-    parent?: string;
-    placeHolder?: string;
-}
-
-class Dom {
-    app: HTMLElement
-    constructor(app: HTMLElement) {
-        this.app = app
+export class Dom {
+    app: HTMLElement 
+    constructor(appElement: HTMLElement) {
+        this.app = appElement
     }
+    
 
     appendToApp(className: string) {
         const element = document.querySelector(className)
@@ -33,6 +20,7 @@ class Dom {
     createElement(data: ElementData): HTMLElement {
         const element = document.createElement(data.tag)
         element.classList.add(data.className)
+        element.id = data.id ?? ""
         element.dataset.name = data.name ?? ""
         element.dataset.placement = data.placement ?? ""
         element.dataset.area = data.area ?? ""
@@ -42,12 +30,34 @@ class Dom {
         element.dataset.focus = data.focus ?? "false"
         element.dataset.path = data.path ?? ""
         element.dataset.parent = data.parent ?? ""
-        element.dataset.placeHolder = data.placeHolder ?? ""
         if(data.parent) {
             const parentElement = document.querySelector(data.parent)
             parentElement?.append(element)
         }
         return element
+    }
+
+    createGraphic(data: GraphicElement) {
+        const graphic = this.createElement({
+            tag: data.tag,
+            className: data.className,
+            parent: data.parent
+        }) as HTMLImageElement
+
+        graphic.src = data.src
+        graphic.alt = data.alt ?? ""
+        return graphic
+    }
+
+    createInput(data: InputElement) {
+        const input = this.createElement({
+            tag: data.tag,
+            className: data.className,
+            parent: data.parent
+        }) as HTMLInputElement
+
+        input.placeholder = data.placeHolder ?? ""
+        return input
     }
 
     remove(element: HTMLElement) {
@@ -63,3 +73,4 @@ class Dom {
     }
 
 }
+
