@@ -1,0 +1,26 @@
+:root {
+    --button-height: 32px;
+    --button-width: 128px;
+    --button-padding: 0;
+    --button-margin: 0;
+    --border-color: yellow;
+    --border-thickness: 2px;
+    --border-radius: 4px;
+    --regular-button-color: cyan;
+    --regular-hover: blue;
+    --action-button-color: red;
+    --action-hover: orange;
+}
+
+.regular-button {
+    border: solid var(--border-color) var(--border-thickness);
+    border-radius: var(--border-radius);
+    background-color: var(--regular-button-color);
+    width: var(--button-width);
+    height: var(--button-height);
+}
+
+.regular-button:hover {
+    background-color: var(--regular-hover);
+}
+

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"encoding/json"
 	"context"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	//"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 
@@ -24,6 +24,10 @@ func (s *StartUpServices) StartUpManager(LibName,LibPath string) string {
 
 
 func (s *StartUpServices) ConfigCheck() Payload {
+
+	// Check if the user config file exist and returns active library path
+
+
 	configDir, err := os.UserConfigDir()
 
 	if err != nil {
@@ -61,7 +65,7 @@ func (s *StartUpServices) ConfigCheck() Payload {
 }
 
 
-func (s *StartUpServices) UpdateConfig(LibName, LibPath string) {
+func (s *StartUpServices) UpdateConfig(LibName, LibPath string) Payload {
 
 	// Create the content of the file
 	libraryLoc := filepath.Join(LibPath, LibName)
@@ -83,10 +87,8 @@ func (s *StartUpServices) UpdateConfig(LibName, LibPath string) {
 
 	if err != nil {
 		LogError("[StartUpServices]","There was a problem in getting config directory:", err)
-		return
+		return failure("Startup Services: Update Config", "UPDATE_CONFIG", "There was a problem in getting the config file", err)
 	}
-
-	LogSuccess("[StartUpServices]", "Config Directory loaded successfully")
 
 	configPath := filepath.Join(configDir, "rabbitpad", "config.json")
 
@@ -98,26 +100,23 @@ func (s *StartUpServices) UpdateConfig(LibName, LibPath string) {
 
 		LogAlerts("[StartUpServices]","Config doesn't exist, making new config", err)
 
-		// Make or check for congif dir
+		// Make or check for config dir
 
 		configDirPath := filepath.Join(configDir, "rabbitpad")
 
 		err := os.MkdirAll(configDirPath, 0755)
 			if err != nil {
 			LogError("[StartUpServices]","There was a problem in creating the config directory:", err)
+			return failure("Startup Services: Update Config", "UPDATE_CONFIG", "There was a problem in creating the config file", err)
 		}
-
-		LogSuccess("[StartUpServices]", "Config Directory created successfully")
 
 		// Make a config
 		// var config *os.File
 		config, err := os.Create(configPath)
 		if err != nil {
 			LogError("[StartUpServices]","There was a problem in creating the config file:", err)
-			return
+			return failure("Startup Services: Update Config", "UPDATE_CONFIG", "There was a problem in updating the config file", err)
 		}
-
-		LogSuccess("[StartUpServices]", "Config file created successfully")
 
 		defer config.Close()
 		encoder := json.NewEncoder(config)
@@ -126,44 +125,29 @@ func (s *StartUpServices) UpdateConfig(LibName, LibPath string) {
 		err = encoder.Encode(configState)
 		if err != nil {
 			LogError("[StartUpServices]","There was a problem in writing to the config file:", err)
-			return
+			return failure("Startup Services: Update Config", "UPDATE_CONFIG", "There was a problem in updating the config file", err)
 		}
 
-		LogSuccess("[StartUpServices]","Config have been created successfully", configPath)
-
-		message := configPath
-			if s.Ctx != nil {
-			runtime.EventsEmit(s.Ctx, "startup-config-update", message)
-			LogInfo("[StartUpServices]", "Config Directory creation event emitted successfully")
-    		}
-	
-		return
+		return success("Startup Services: Update Config", "UPDATE_CONFIG", "Config updated successfully", configPath)
 	}
 
 	/*=========== Update if it does exist =============*/
 
 	// Read the file
 	configBytes, err := os.ReadFile(configPath)
-
 	if err != nil {
 		LogError("[StartUpServices]","There was a problem in reading the config file:", err)
-		return
+		return failure("Startup Services: Update Config", "UPDATE_CONFIG", "There was a problem in reading the config file", err)
 	}
 
-	LogSuccess("[StartUpServices]", "Config file read successfully")
-
-	// Unmarshel it
-
+	// Unmarshal it
 	var appState AppState
 	if err := json.Unmarshal(configBytes, &appState); err != nil {
-		LogError("[StartUpServices]","There was a problem in unmarshalling the config file:", err)
-		return
+		LogError("[StartUpServices]","There was a problem in unmarshaling the config file:", err)
+		return failure("Startup Services: Update Config", "UPDATE_CONFIG", "There was a problem in unmarshaling the config file", err)
 	}
 
-	LogSuccess("[StartUpServices]", "Config file unmarshalled successfully")
-
 	// Update it
-
 	appState.Libraries = append(appState.Libraries, libraryStruct);
 	appState.ActiveLibrary = libraryLoc
 
@@ -171,25 +155,16 @@ func (s *StartUpServices) UpdateConfig(LibName, LibPath string) {
 	updatedConfig, err := json.MarshalIndent(appState, "", "  ")
 	if err != nil {
 		LogError("[StartUpServices]","There was a problem in marshalling the config file:", err)
-		return
+		return failure("Startup Services: Update Config", "UPDATE_CONFIG", "There was a problem in marshalling the config file", err)
 	}
-
-	LogSuccess("[StartUpServices]", "Config file marshalled successfully")
-
 	// Write it back
-
 	err = os.WriteFile(configPath,updatedConfig,0644) 
-
 	if err != nil {
-		LogError("[StartUpServices]","There was a problem in updaing the config file:", err)
-		return 
+		LogError("[StartUpServices]","There was a problem in updating the config file:", err)
+		return failure("Startup Services: Update Config", "UPDATE_CONFIG", "There was a problem in updating the config file", err)
 	}
 
 	LogSuccess("[StartUpServices]","Config have been updated successfully", configPath)
 
-	message := configPath
-	if s.Ctx != nil {
-        runtime.EventsEmit(s.Ctx, "startup-config-update", message)
-		LogInfo("[StartUpServices]", "Config update event emitted successfully")
-    }
+	return success("Startup Services: Update Config", "UPDATE_CONFIG", "Config updated successfully", configPath)
 }

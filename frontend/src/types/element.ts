@@ -1,7 +1,7 @@
 
 export interface ElementData {
     tag: string;
-    className: string;
+    className?: string;
     id?: string;
     name?: string;
     placement?: string;
@@ -22,4 +22,8 @@ export interface GraphicElement extends ElementData {
 
 export interface InputElement extends ElementData {
     placeHolder?: string;
+}
+
+export interface ButtonElement extends ElementData {
+    disabled?: boolean
 }

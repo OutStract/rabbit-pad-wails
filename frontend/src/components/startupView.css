@@ -1,0 +1,86 @@
+.rp-card-startup {
+    width: 600px;
+    height: 300px;
+    border: rgb(0, 0, 0) solid;
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    border-radius: 10px;
+    font-family: "SN Pro", sans-serif;
+    flex: 1;  /* This will make the startup contianer take up all the remaining space of the parent */
+    min-height: 0;  /*<- This will override the default min-height: auto; of the flex:1; 
+                    min-height:auto; means that the contaier will never go below the content size*/
+}
+
+.rp-container-logo {
+    flex: 1;
+    display: flex;
+    min-height: 0; 
+    align-items:center;
+    justify-content: center;
+    overflow:hidden; /* This property will make sure the content does't go outside of the boundries */
+}
+
+.rp-logo-graphic {
+    width: 75%;
+    height: 75%;
+    object-fit: contain;
+    
+}
+
+.rp-startup-right{
+    flex: 2;  
+    display:flex;
+    flex-direction: column;
+}
+
+.rp-title {
+    font-size: 42px;
+    font-family: "Luckiest Guy", cursive;
+    font-weight: 400;
+    font-style: normal;
+    margin: 10px
+}
+
+
+.rp-startup-operations {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items:space-between;
+    height: 200px;
+    margin-right: 25px;
+}
+
+.rp-startup-name-input, .rp-startup-location-input, .rp-startup-create-input {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rp-user-direction {
+    margin:0;
+    text-align:left;
+}
+
+
+hr {
+    border: none;
+    height: 2px;
+    background-color: #33333322;
+    width: 100%;
+}
+
+.rp-user-location {
+    color: #656565;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    text-align:left;
+    width: 200px; /* Set the maximun limit*/
+    white-space: nowrap; /* White Space seems to control if a text should wrap, 
+                         or move to another line when hiting the limit, nowrap makes it to not do that until a line break tag is */
+    overflow: hidden;
+    text-overflow: ellipsis; /*Add the ...  at the place where text is hiting its boundries and overflowing*/
+
+}

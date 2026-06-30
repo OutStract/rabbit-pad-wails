@@ -6,4 +6,4 @@ export function ConfigCheck():Promise<services.Payload>;
 
 export function StartUpManager(arg1:string,arg2:string):Promise<string>;
 
-export function UpdateConfig(arg1:string,arg2:string):Promise<void>;
+export function UpdateConfig(arg1:string,arg2:string):Promise<services.Payload>;

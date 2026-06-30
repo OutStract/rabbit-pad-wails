@@ -1,15 +1,50 @@
 import { OpenDirectory } from "../../wailsjs/go/services/DialogServices"
+import { LoadLibConfig } from "../../wailsjs/go/services/LibraryServices"
+import { ConfigCheck, UpdateConfig } from "../../wailsjs/go/services/StartUpServices"
+import { EventsEmit } from "../../wailsjs/runtime/runtime"
+import { UPDATE_STATE } from "../events/events.ts"
 import { Payload } from "../types/payload"
 
 export class StartUpServices {
 
-    async openDirectory() {
+    async openDirectory(): Promise<string | null> {
         const result: Payload = await OpenDirectory()
         if(!result.success) {
-            return result.message
+            // Move the error from return value to modal
+            console.log(result.message)
+            // and return null value
+            return null
         }    
+        return result.data as string
+    }
 
-        return result.data
+    async updateConfig(libraryName: string, libraryPath: string): Promise<string | null> {
+        const result: Payload = await UpdateConfig(libraryName, libraryPath)
+        if(!result.success) {
+            console.log(result.message)
+            return null
+        }
+        return result.data as string
+    }
+
+    async configCheck(): Promise<string | null> {
+        const result: Payload = await ConfigCheck()
+        if(!result.success) {
+            console.log(result.message)
+            return null
+        }
+        EventsEmit(UPDATE_STATE, result)
+        return result.data as string
+    }
+
+    async loadLibraryConfig(libraryPath: string): Promise<string | null> {
+        const result: Payload = await LoadLibConfig(libraryPath)
+        if(!result.success) {
+            console.log(result.message)
+            return null
+        }
+        EventsEmit(UPDATE_STATE, result)
+        return result.data as string
     }
     
 }

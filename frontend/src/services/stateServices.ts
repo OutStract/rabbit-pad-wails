@@ -1,5 +1,6 @@
 import { EventsOn, EventsEmit } from '../../wailsjs/runtime/runtime';
 import { Payload } from '../types/payload';
+import * as EVENT from '../events/events.ts'
 
 class Appstate {
     libraryPath = "";
@@ -8,24 +9,28 @@ class Appstate {
     libraryTree: unknown[] = [];
     projectPath = "";
     projectName = "";
+    projectTree: unknown[] = [];
     newProjectPath = "";
     activeFilePath = "";
     activeFileName = "";
     selectedFiles: unknown[] = []
 
     Initialize() {
-        EventsOn("UPDATE_STATE", (payload: Payload) => { 
+        EventsOn(EVENT.UPDATE_STATE, (payload: Payload) => { 
             this.update(payload)
         })
     }
 
     update(payload: Payload){
         switch(payload.action) {
-            case "RABBIT_CONFIG_CHECK":
+            case EVENT.APP_CONFIG_CHECK:
                 this.libraryPath = payload.data as string;
                 break
-            case "RABBIT_CONFIG_UPDATE":
+            case EVENT.APP_CONFIG_UPDATE: // Get config file location
                 this.libraryConfigPath = payload.data as string;
+                break
+            case EVENT.LAST_OPENED_PROJECT: // Get last opened project path
+                this.projectPath = payload.data as string
                 break
         }
     }

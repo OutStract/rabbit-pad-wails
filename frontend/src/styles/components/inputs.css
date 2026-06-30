@@ -1,0 +1,32 @@
+:root {
+    --input-height: 28px;
+    --input-width: 124px;
+    --input-padding: 0;
+    --input-margin: 0;
+    --border-color: rgb(0, 0, 0);
+    --border-thickness: 0.5px;
+    --border-radius: 4px;
+    --input-color: rgb(255, 255, 255);
+    --input-hover: rgb(232, 232, 232);
+
+    --placeholder-color: rgb(0, 0, 0);
+}
+
+.user-input {
+    width: var(--input-width);
+    height: var(--input-height);
+    border: solid var(--border-color) var(--border-thickness);
+    border-radius: var(--border-radius);
+    background-color: var(--input-color);
+    padding: var(--input-padding);
+    margin: var(--input-margin);
+    text-align: center;
+}
+
+.user-input:hover {
+    background-color: var(--input-hover);
+}
+
+.user-input::placeholder{
+    color: var(--placeholder-color);
+}

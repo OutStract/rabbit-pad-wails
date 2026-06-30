@@ -158,6 +158,8 @@ func (l *LibraryServices) UpdateLibConfig (libPath, activeProject string) Payloa
 
 func (l *LibraryServices) LoadLibConfig (libPath string) Payload {
 
+	// Taking the library path and return last opened project path
+
 	ConfigLoc := filepath.Join(libPath, ".rabbitpad", "libConfig.json")
 
 	_, err := os.Stat(ConfigLoc)

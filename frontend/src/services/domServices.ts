@@ -1,4 +1,4 @@
-import { ElementData, GraphicElement, InputElement } from "../types/element"
+import { ButtonElement, ElementData, GraphicElement, InputElement } from "../types/element"
 
 export class Dom {
     app: HTMLElement 
@@ -19,7 +19,7 @@ export class Dom {
 
     createElement(data: ElementData): HTMLElement {
         const element = document.createElement(data.tag)
-        element.classList.add(data.className)
+        element.classList.add(data.className ?? "")
         element.id = data.id ?? ""
         element.dataset.name = data.name ?? ""
         element.dataset.placement = data.placement ?? ""
@@ -52,12 +52,24 @@ export class Dom {
     createInput(data: InputElement) {
         const input = this.createElement({
             tag: data.tag,
-            className: data.className,
+            className: data.className ?? "user-input",
             parent: data.parent
         }) as HTMLInputElement
 
         input.placeholder = data.placeHolder ?? ""
         return input
+    }
+
+    createButton(data: ButtonElement) {
+        const button = this.createElement({
+            tag: data.tag,
+            className: data.className ?? "regular-button",
+            parent: data.parent,
+            text: data.text
+        }) as HTMLInputElement
+
+        button.disabled = data.disabled ?? false
+        return button
     }
 
     remove(element: HTMLElement) {

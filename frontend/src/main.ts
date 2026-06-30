@@ -1,8 +1,10 @@
 import { Dom } from './services/domServices';
-import { ConfigCheck } from '../wailsjs/go/services/StartUpServices';
 import './style.css';
 import './app.css';
-import { StartupView } from './components/startup';
+import './styles/components/buttons.css'
+import './styles/components/inputs.css'
+import { StartupView } from './components/startupView';
+import { startupServices } from './services/startupServices';
 
 const app = document.getElementById("app");
 console.log(app)
@@ -15,11 +17,18 @@ export const dom = new Dom(app)
 
 class StartUp {
 
-    start() {
-        const configData = false //ConfigCheck()
-        if(!configData) {
+    async start() {
+        const configPath = false //await startupServices.configCheck()
+        if(!configPath) {
             new StartupView(dom).view()
+            return
         }
+
+        const projectConfig = await startupServices.loadLibraryConfig(configPath)
+        if(!projectConfig) {
+
+        }
+
     }
 }
 
