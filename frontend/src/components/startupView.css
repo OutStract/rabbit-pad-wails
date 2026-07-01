@@ -1,7 +1,7 @@
 .rp-card-startup {
     width: 600px;
     height: 300px;
-    border: rgb(0, 0, 0) solid;
+    border: solid var(--accent);
     display: flex;
     justify-content: space-between;
     text-align: center;
@@ -25,7 +25,6 @@
     width: 75%;
     height: 75%;
     object-fit: contain;
-    
 }
 
 .rp-startup-right{
@@ -52,7 +51,7 @@
     margin-right: 25px;
 }
 
-.rp-startup-name-input, .rp-startup-location-input, .rp-startup-create-input {
+.rp-startup-name-input, .rp-startup-location-input, .rp-startup-create-input, .rp-open-folder {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -64,10 +63,10 @@
 }
 
 
-hr {
+.rp-separator {
     border: none;
     height: 2px;
-    background-color: #33333322;
+    background-color: var(--accent);
     width: 100%;
 }
 
@@ -77,7 +76,7 @@ hr {
     margin: 0;
     padding: 0;
     text-align:left;
-    width: 200px; /* Set the maximun limit*/
+    width: 200px; /* Set the maximum limit*/
     white-space: nowrap; /* White Space seems to control if a text should wrap, 
                          or move to another line when hiting the limit, nowrap makes it to not do that until a line break tag is */
     overflow: hidden;

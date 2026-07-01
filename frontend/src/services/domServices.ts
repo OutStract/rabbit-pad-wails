@@ -1,20 +1,14 @@
 import { ButtonElement, ElementData, GraphicElement, InputElement } from "../types/element"
 
-export class Dom {
-    app: HTMLElement 
-    constructor(appElement: HTMLElement) {
-        this.app = appElement
-    }
-    
+class Dom {
 
-    appendToApp(className: string) {
-        const element = document.querySelector(className)
+    getElement(selector: string): HTMLElement | null {
+        const element = document.querySelector(selector)
         if(!element) {
-            console.log(`Could not find element: ${className}`)
-            return
+            console.log("Cannot get element", selector)
+            return null
         }
-        element.classList.add(className)
-        this.app.append(element)
+        return element as HTMLElement
     }
 
     createElement(data: ElementData): HTMLElement {
@@ -72,6 +66,25 @@ export class Dom {
         return button
     }
 
+    createIcon(name: string) {
+        const iconContainer = this.createElement({
+            tag: "div",
+            className: "icon-container"
+        })
+
+        const iconGraphic = this.createElement({
+            tag: "span",
+            className: "material-symbols-outlined",
+            text: name,
+        })
+
+        this.addClass("icon", iconGraphic)
+
+        iconContainer.append(iconGraphic)
+
+        return iconContainer
+    }
+
     remove(element: HTMLElement) {
         element.remove()
     }
@@ -86,3 +99,4 @@ export class Dom {
 
 }
 
+export const DOM = new Dom()

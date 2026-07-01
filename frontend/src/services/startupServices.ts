@@ -18,7 +18,7 @@ export class StartUpServices {
         return result.data as string
     }
 
-    async updateConfig(libraryName: string, libraryPath: string): Promise<string | null> {
+    async updateConfig(libraryName: string, libraryPath: string): Promise< string | null > {
         const result: Payload = await UpdateConfig(libraryName, libraryPath)
         if(!result.success) {
             console.log(result.message)
@@ -28,11 +28,13 @@ export class StartUpServices {
     }
 
     async configCheck(): Promise<string | null> {
+        // Get library path
         const result: Payload = await ConfigCheck()
         if(!result.success) {
             console.log(result.message)
             return null
         }
+        console.log(result.data)
         EventsEmit(UPDATE_STATE, result)
         return result.data as string
     }
@@ -46,7 +48,6 @@ export class StartUpServices {
         EventsEmit(UPDATE_STATE, result)
         return result.data as string
     }
-    
 }
 
 export const startupServices = new StartUpServices()

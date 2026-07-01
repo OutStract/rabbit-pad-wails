@@ -84,7 +84,7 @@ func (l *LibraryServices) LibTree(libRoot string) Payload {
 
 }
 
-func (l *LibraryServices) UpdateLibConfig (libPath, activeProject string) Payload {
+func (l *LibraryServices) UpdateLibConfig(libPath, activeProject string) Payload {
 
 	// Prepare the content of the file
 

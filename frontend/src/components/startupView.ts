@@ -1,13 +1,13 @@
 
-import { Dom } from '../services/domServices';
-import { startupServices, StartUpServices } from '../services/startupServices';
+import { DOM } from '../services/domServices';
+import { startupServices } from '../services/startupServices';
 import './startupView.css'
 
-export class StartupView{
+class StartupView{
     constructor(
-        private dom: Dom
+        private dom = DOM
     ) {}
-    view() {
+    build() {
         const startupView = this.dom.createElement({
             tag: "div",
             className: "rp-card-startup",
@@ -121,6 +121,7 @@ export class StartupView{
 
         const libraryCreateBtn = this.dom.createButton({
             tag: "button",
+            className: "action-button",
             parent: ".rp-startup-create-input",
             text: "Create"
         })
@@ -139,5 +140,34 @@ export class StartupView{
         }
         libraryCreateBtn.addEventListener("click", createLibrary)
 
+        const separator = this.dom.createElement({
+            tag: "hr",
+            className: "rp-separator",
+            parent: ".rp-startup-operations"
+        })
+
+        const openFolderAsLibrary = this.dom.createElement({
+            tag: "div",
+            className: "rp-open-folder",
+            parent:".rp-startup-operations"
+        })
+
+        const message4 = this.dom.createElement({
+            tag: "p",
+            text: "Open folder as library",
+            className: "rp-user-direction",
+            parent: ".rp-open-folder"
+        })
+
+        const openFolderBtn = this.dom.createButton({
+            tag: "button",
+            className: "action-button",
+            disabled: true,
+            parent: ".rp-open-folder",
+            text: "Open"
+        })
+
     }
 }
+
+export const renderStartup = new StartupView()

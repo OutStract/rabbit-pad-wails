@@ -11,7 +11,7 @@ export interface ElementData {
     draggable?: string;
     focus?: string;
     path?: string;
-    parent: string;
+    parent?: string;
     
 }
 

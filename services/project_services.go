@@ -13,47 +13,64 @@ type ProjectServices struct {
 	Ctx context.Context
 }
 
-func (p *ProjectServices) MakeProject (libPath, projectName string) error {
+func (p *ProjectServices) MakeProject (libPath, projectName string) Payload {
 	projectPath := filepath.Join(libPath, projectName)
 
 	_,err := os.Stat(projectPath)
 	if err == nil {
 		LogError("[ProjectServices]","Project with the same name already exist:", err)
-		return errors.New("Project with the same name already exist")
+		err = errors.New("Project with the same name already exist")
+		return failure("Project Services: Make Project", "MAKE_PROJECT", "File with the same name already exist", err)
 	}
 	// Check for existing file
 	systemFolder := filepath.Join(projectPath, "system")
 	userFolder := filepath.Join(projectPath, "user")
 	trashFolder := filepath.Join(projectPath, ".trash")
+	contentFolder := filepath.Join(systemFolder, "Content")
+	entityFolder := filepath.Join(systemFolder, "Entity")
+	locationsFolder := filepath.Join(systemFolder, "Locations")
+
+
+
 
 	err = os.MkdirAll(systemFolder, 0755)
-			if err != nil {
-			LogError("[ProjectServices]","There was a problem in creating the system folder:", err)
-			return err
-		}
-	LogSuccess("[ProjectServices]", "The system folder has been made successfully")
+		if err != nil {
+		LogError("[ProjectServices]","There was a problem in creating the system folder:", err)
+		return failure("Project Services: Make Project", "MAKE_PROJECT", "There was a problem in making the system folder", err)
+	}
+
+	err = os.MkdirAll(contentFolder, 0755)
+		if err != nil {
+		LogError("[ProjectServices]","There was a problem in creating the system folder:", err)
+		return failure("Project Services: Make Project", "MAKE_PROJECT", "There was a problem in making the system folder", err)
+	}
+
+	err = os.MkdirAll(entityFolder, 0755)
+		if err != nil {
+		LogError("[ProjectServices]","There was a problem in creating the system folder:", err)
+		return failure("Project Services: Make Project", "MAKE_PROJECT", "There was a problem in making the system folder", err)
+	}
+
+	err = os.MkdirAll(locationsFolder, 0755)
+		if err != nil {
+		LogError("[ProjectServices]","There was a problem in creating the system folder:", err)
+		return failure("Project Services: Make Project", "MAKE_PROJECT", "There was a problem in making the system folder", err)
+	}
 
 	err = os.MkdirAll(userFolder, 0755)
-			if err != nil {
-			LogError("[ProjectServices]","There was a problem in creating the user folder:", err)
-			return err
-		}
-	LogSuccess("[ProjectServices]", "The user folder has been made successfully")
+		if err != nil {
+		LogError("[ProjectServices]","There was a problem in creating the user folder:", err)
+		return failure("Project Services: Make Project", "MAKE_PROJECT", "There was a problem in making the user folder", err)
+	}
 
 	err = os.MkdirAll(trashFolder, 0755)
-			if err != nil {
-			LogError("[ProjectServices]","There was a problem in creating the trash folder:", err)
-			return err
-		}
-	LogSuccess("[ProjectServices]", "The trash folder has been made successfully")
+		if err != nil {
+		LogError("[ProjectServices]","There was a problem in creating the trash folder:", err)
+		return failure("Project Services: Make Project", "MAKE_PROJECT", "There was a problem in making the trash folder", err)
+	}
 
-	message := projectPath
-	if p.Ctx != nil {
-		runtime.EventsEmit(p.Ctx, "project-created", message)
-		LogInfo("[ProjectServices]", "Project Created successfully")
-    }
+	return success("Project Services: Make Project", "MAKE_PROJECT", "Project created successfully", projectPath)
 
-	return nil
 }
 
 type ProjectNode struct {
@@ -77,8 +94,8 @@ func (p *ProjectServices) ProjectTree (projectRoot string) []ProjectNode  {
 		fullPath := filepath.Join(projectRoot, entry.Name())
 
 		if entry.Name()[0] == '.' {
-        LogAlerts("[ProjectServices]","This is a hidden file, skipping...", entry.Name())
-        continue
+			LogAlerts("[ProjectServices]","This is a hidden file, skipping...", entry.Name())
+			continue
     	}
 
 		if entry.IsDir() {

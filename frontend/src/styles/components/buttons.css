@@ -3,17 +3,18 @@
     --button-width: 128px;
     --button-padding: 0;
     --button-margin: 0;
-    --border-color: yellow;
-    --border-thickness: 2px;
     --border-radius: 4px;
-    --regular-button-color: cyan;
-    --regular-hover: blue;
+    --regular-button-color: #F5EDF0;
+    --regular-hover: #D1CCDC;
     --action-button-color: red;
-    --action-hover: orange;
+    --action-hover: #2B2D42;
+    --icon-size: 24px;
+    --icon-hover: rgba(43, 45, 66, 0.5);
+    --icon-content-hover: #F5EDF0;
 }
 
 .regular-button {
-    border: solid var(--border-color) var(--border-thickness);
+    border: none;
     border-radius: var(--border-radius);
     background-color: var(--regular-button-color);
     width: var(--button-width);
@@ -24,3 +25,39 @@
     background-color: var(--regular-hover);
 }
 
+
+.action-button{
+    width: var(--input-width);
+    height: var(--input-height);
+    border: none ;
+    border-radius: var(--border-radius);
+    background-color: var(--accent);
+    padding: var(--input-padding);
+    margin: var(--input-margin);
+    text-align: center;
+}
+
+.action-button:hover{
+    background-color: var(--action-hover);
+    color: var(--text-color)
+}
+
+.icon-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--border-radius);
+    height: 32px;
+    width: 32px;
+    color: var(--text-color);
+}
+
+.icon-container:hover {
+    background-color: var(--icon-hover);
+    color: var(--icon-content-hover);
+}
+.icon {
+    font-size: var(--icon-size); 
+    padding: 0;
+    margin: 0;
+}

@@ -1,10 +1,10 @@
-export function getName (path) {
+export function getName (path:string): string {
     const pathSplit = path.split(/[\\/]/)
     const name = pathSplit.pop()
-    return name
+    return name as string
 }
 
-export function getBasePath(fullPath) {
+export function getBasePath(fullPath: string) {
     const pathSplit = fullPath.split(/[\\/]/)
     const name = pathSplit.pop()
     if(fullPath.includes('\\')) {
@@ -15,7 +15,7 @@ export function getBasePath(fullPath) {
     return basePath
 }
 
-export function cleanName(name) {
+export function cleanName(name: string) {
     const nameSplit = name.split('.')
     if(nameSplit.length > 1) {
         nameSplit.pop()
@@ -23,7 +23,7 @@ export function cleanName(name) {
     return nameSplit.join('.')
 }
 
-export function updateFilePath(basePath, name) {
+export function updateFilePath(basePath:string, name:string) {
     if(basePath.includes('\\')) {
         const newPath = `${basePath}\\${name}`
         return newPath

@@ -1,34 +1,44 @@
-import { Dom } from './services/domServices';
+import { DOM } from './services/domServices';
 import './style.css';
 import './app.css';
 import './styles/components/buttons.css'
 import './styles/components/inputs.css'
-import { StartupView } from './components/startupView';
+import { renderStartup } from './components/startupView';
 import { startupServices } from './services/startupServices';
+import { appBody } from './components/appBody';
+import { LibraryView, renderLibrary } from './components/libraryView';
+import { renderFooter } from './components/footer';
+import { renderHeader } from './components/header';
+import { libraryServices } from './services/libraryServices';
+import { appState } from './services/stateServices';
 
 const app = document.getElementById("app");
-console.log(app)
 if(!app) {
     throw new Error("App element not found.")
 }
-export const dom = new Dom(app)
 
+appState.Initialize()
 
 
 class StartUp {
 
     async start() {
-        const configPath = false //await startupServices.configCheck()
+        const configPath = await startupServices.configCheck()
         if(!configPath) {
-            new StartupView(dom).view()
+            renderStartup.build()
             return
         }
 
-        const projectConfig = await startupServices.loadLibraryConfig(configPath)
+        appBody.build()
+        renderHeader.build()
+
+        await libraryServices.libraryTree()
+        
+        const projectConfig = false //await startupServices.loadLibraryConfig(configPath)
         if(!projectConfig) {
-
+            renderLibrary.build()
         }
-
+        
     }
 }
 
