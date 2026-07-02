@@ -1,8 +1,9 @@
 import { EventsOn, EventsEmit } from '../../wailsjs/runtime/runtime';
 import { Payload } from '../types/payload';
 import * as EVENT from '../events/events.ts'
-import { LibraryTree } from '../types/libraryTree.ts';
+import { LibraryTree, ProjectTree, RenameData } from '../types/trees.ts';
 import { getName } from '../utils/pathUtils.ts';
+import { LibTree } from '../../wailsjs/go/services/LibraryServices';
 
 class Appstate {
     
@@ -18,7 +19,7 @@ class Appstate {
     libraryTree: LibraryTree[] = [];
     projectPath = "";
     projectName = "";
-    projectTree: unknown[] = [];
+    projectTree: ProjectTree[] = [];
     activeFilePath = "";
     activeFileName = "";
     selectedFiles: unknown[] = []
@@ -31,18 +32,46 @@ class Appstate {
                 this.libraryPath = payload.data as string;
                 this.libraryName = getName(payload.data as string)
                 break
+
             case EVENT.APP_CONFIG_UPDATE: // Get config file location
                 this.libraryConfigPath = payload.data as string;
                 break
+
             case EVENT.LAST_OPENED_PROJECT: // Get last opened project path
                 this.projectPath = payload.data as string
                 this.projectName = getName(payload.data as string)
                 break
+
             case EVENT.LIB_TREE: 
                 this.libraryTree = payload.data as LibraryTree[]
                 break
-            case EVENT.MAKE_PROJECT:
+
+            case EVENT.MAKE_PROJECT: // Append new Project node
                 EventsEmit(payload.action, payload.data)
+                break
+
+            case EVENT.RENAME_PROJECT: // Update project node
+                const data = payload.data as RenameData
+                const oldPath = data.oldPath
+                const newPath = data.newPath
+                const oldNode = this.libraryTree.find(node => node.path == oldPath)
+
+                if(oldNode) {
+                    oldNode.name = getName(newPath)
+                    oldNode.path = newPath
+                }
+                EventsEmit(payload.action, payload.data)
+                break
+
+            case EVENT.DELETE_PROJECT: // remove project node
+                this.libraryTree = this.libraryTree.filter(node => node.path !== payload.data)
+                EventsEmit(payload.action, payload.data)
+                break 
+                
+            case EVENT.PROJECT_TREE: // Project view
+                this.projectTree = payload.data as ProjectTree[]
+                EventsEmit(payload.action, payload.data)
+                break 
         }
     }
 

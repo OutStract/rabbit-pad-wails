@@ -142,7 +142,7 @@ func (p* ProjectServices) ProjectTree(projectRoot string) Payload {
 
 }
 
-func (f *ProjectServices) RenameProject(OldNamePath, BasePath, NewName string) Payload {
+func (p *ProjectServices) RenameProject(OldNamePath, BasePath, NewName string) Payload {
 	NewNamePath := filepath.Join(BasePath, NewName)
 	_,err := os.Stat(NewNamePath)
 	if err == nil {
@@ -157,10 +157,16 @@ func (f *ProjectServices) RenameProject(OldNamePath, BasePath, NewName string) P
 		return failure("Project Services: Rename Project", "RENAME_PROJECT", "Error in renaming the project", err)
 	}
 
-	return success("Project Services: Rename Project", "RENAME_PROJECT", "Project renamed successfully", NewNamePath)
+
+	data := RenameData{
+		OldPath: OldNamePath,
+		NewPath: NewNamePath,
+	}
+
+	return success("Project Services: Rename Project", "RENAME_PROJECT", "Project renamed successfully", data)
 }
 
-func (f *ProjectServices) DeleteProject(LibraryPath, ProjectPath, ProjectName string) Payload {
+func (p *ProjectServices) DeleteProject(LibraryPath, ProjectPath, ProjectName string) Payload {
 	// Take the project name and make the delete path
 	count := 0
 	TrashLoc := filepath.Join(LibraryPath, ".trash")
@@ -183,5 +189,5 @@ func (f *ProjectServices) DeleteProject(LibraryPath, ProjectPath, ProjectName st
 		return failure("Project Services: Rename Project", "DELETE_PROJECT", "Couldn't delete the project", err)
 	}
 
-	return success("Project Services: Rename Project", "DELETE_PROJECT", "Project Deleted successfully", destination)
+	return success("Project Services: Rename Project", "DELETE_PROJECT", "Project Deleted successfully", ProjectPath)
 }

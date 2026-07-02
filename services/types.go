@@ -29,3 +29,8 @@ type Settings struct {
     Debug bool
 }
 
+
+type RenameData struct {
+    OldPath string `json:"oldPath"`
+    NewPath string	`json:"newPath"`
+}

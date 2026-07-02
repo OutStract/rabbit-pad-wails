@@ -9,3 +9,8 @@ export const MAKE_LIB = "MAKE_LIB"
 
 // Library Events
 export const MAKE_PROJECT = "MAKE_PROJECT"
+export const RENAME_PROJECT = "RENAME_PROJECT"
+export const DELETE_PROJECT = "DELETE_PROJECT"
+
+// Project Services
+export const PROJECT_TREE = "PROJECT_TREE"

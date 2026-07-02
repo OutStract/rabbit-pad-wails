@@ -2,7 +2,7 @@ import * as backend from '../../wailsjs/go/services/LibraryServices.js'
 import * as EVENT from '../events/events.ts'
 
 import { EventsEmit } from '../../wailsjs/runtime/runtime.js'
-import { LibraryTree } from '../types/libraryTree.js'
+import { LibraryTree } from '../types/trees.js'
 import { Payload } from '../types/payload.js'
 import { appState } from './stateServices.js'
 
