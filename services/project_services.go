@@ -3,10 +3,11 @@ package services
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	//"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type ProjectServices struct {
@@ -16,22 +17,21 @@ type ProjectServices struct {
 func (p *ProjectServices) MakeProject (libPath, projectName string) Payload {
 	projectPath := filepath.Join(libPath, projectName)
 
+	// Check for existing file
 	_,err := os.Stat(projectPath)
 	if err == nil {
 		LogError("[ProjectServices]","Project with the same name already exist:", err)
 		err = errors.New("Project with the same name already exist")
 		return failure("Project Services: Make Project", "MAKE_PROJECT", "File with the same name already exist", err)
 	}
-	// Check for existing file
+
+
 	systemFolder := filepath.Join(projectPath, "system")
 	userFolder := filepath.Join(projectPath, "user")
 	trashFolder := filepath.Join(projectPath, ".trash")
 	contentFolder := filepath.Join(systemFolder, "Content")
 	entityFolder := filepath.Join(systemFolder, "Entity")
 	locationsFolder := filepath.Join(systemFolder, "Locations")
-
-
-
 
 	err = os.MkdirAll(systemFolder, 0755)
 		if err != nil {
@@ -81,13 +81,13 @@ type ProjectNode struct {
 
 }
 
-func (p *ProjectServices) ProjectTree (projectRoot string) []ProjectNode  {
+func (p *ProjectServices) BuildProjectTree(projectRoot string) ([]ProjectNode, error)  {
 	projectTree := []ProjectNode{}
 
 	projectNodes, err := os.ReadDir(projectRoot)
 	if err != nil {
 		LogError("[ProjectServices]","There was a problem in reading the project folder:", err)
-		return nil
+		return nil, err
 	}
 
 	for _,entry := range projectNodes {
@@ -99,13 +99,22 @@ func (p *ProjectServices) ProjectTree (projectRoot string) []ProjectNode  {
     	}
 
 		if entry.IsDir() {
+
+			children, err := p.BuildProjectTree(fullPath)
+
+			if err != nil {
+				LogError("[ProjectServices]","There was a problem in reading the children folder:", err)
+				return nil, err
+			}
+
 			node := ProjectNode {
 				Name: entry.Name(),
 				Path: fullPath,
 				IsFolder: entry.IsDir(),
-				Children: p.ProjectTree(fullPath),
+				Children: children ,
 			}
 			projectTree = append(projectTree, node)
+
 		} else {
 			node := ProjectNode {
 				Name: entry.Name(),
@@ -117,19 +126,62 @@ func (p *ProjectServices) ProjectTree (projectRoot string) []ProjectNode  {
 		}
 	}
 	LogSuccess("[ProjectServices]", "The project tree has been read successfully")
-	message := projectTree
-	if p.Ctx != nil {
-		runtime.EventsEmit(p.Ctx, "project-tree", message)
-		LogInfo("[ProjectServices]", "EVENT EMIT Project Read successfully")
-    }
-	return projectTree
+
+	return projectTree, nil
 }
 
-func RenameProject () {
+func (p* ProjectServices) ProjectTree(projectRoot string) Payload {
+	result, err := p.BuildProjectTree(projectRoot)
+
+	if err != nil {
+		return failure("Project Services: Project  Tree", "PROJECT_TREE", "Error in reading project tree", err)
+	}
+
+	return success("Project Services: Project  Tree", "PROJECT_TREE", "Project tree read successfully", result)
+
 
 }
 
-func DeleteProject () {
-	
+func (f *ProjectServices) RenameProject(OldNamePath, BasePath, NewName string) Payload {
+	NewNamePath := filepath.Join(BasePath, NewName)
+	_,err := os.Stat(NewNamePath)
+	if err == nil {
+		LogAlerts("[FileServices]","File with the name already exist", err)
+		err = errors.New("Project with the same name exist")
+		return failure("Project Services: Rename Project", "RENAME_PROJECT", "Project with the same name exist", err)
+	}
+
+	err = os.Rename(OldNamePath, NewNamePath)
+
+	if err != nil {
+		return failure("Project Services: Rename Project", "RENAME_PROJECT", "Error in renaming the project", err)
+	}
+
+	return success("Project Services: Rename Project", "RENAME_PROJECT", "Project renamed successfully", NewNamePath)
 }
 
+func (f *ProjectServices) DeleteProject(LibraryPath, ProjectPath, ProjectName string) Payload {
+	// Take the project name and make the delete path
+	count := 0
+	TrashLoc := filepath.Join(LibraryPath, ".trash")
+	destination := filepath.Join(TrashLoc, fmt.Sprintf("%d-%s", count, ProjectName))
+	// Check if that file already exist in the delete folder
+	// if exist then add a number on it
+	for {
+		_, err := os.Stat(destination) 
+		if err != nil {
+			LogAlerts("[ProjectServices]", "Found a available path", destination)
+			break
+		}
+		count++
+		destination = filepath.Join(TrashLoc, fmt.Sprintf("%d-%s", count, ProjectName))
+	}
+
+	err := os.Rename(ProjectPath, destination)
+	if err != nil {
+		LogError("[ProjectServices]", "There was problem in deleted the file", err)
+		return failure("Project Services: Rename Project", "DELETE_PROJECT", "Couldn't delete the project", err)
+	}
+
+	return success("Project Services: Rename Project", "DELETE_PROJECT", "Project Deleted successfully", destination)
+}

@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/google/uuid"
-	"github.com/wailsapp/wails/v2/pkg/runtime"
+	//"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 
@@ -16,7 +16,7 @@ type FileServices struct {
 	Ctx context.Context
 }
 
-func (f *FileServices) CreateFile(ProjectPath string) (string, error) {
+func (f *FileServices) CreateFile(ProjectPath string) Payload {
 	
 	count := 0
 	filePath := filepath.Join(ProjectPath, fmt.Sprintf("%d-untitled.md", count))
@@ -30,7 +30,6 @@ func (f *FileServices) CreateFile(ProjectPath string) (string, error) {
 			LogAlerts("[FileService]", "Found a available path", filePath)
 			break
 		}
-		// LogError("[FileService]", "Filepath already exists", filePath)
 		count++
 		filePath = filepath.Join(ProjectPath, fmt.Sprintf("%d-untitled.md", count))
 	}
@@ -38,48 +37,38 @@ func (f *FileServices) CreateFile(ProjectPath string) (string, error) {
 	id, err := uuid.NewV7()
 	if err != nil {
 		LogError("[FileService]", "There is a problem in making the file ID")
-		return "", errors.New("Problem in adding id in the file")
+		err = errors.New("Problem in adding id in the file")
+
+		return failure("File Services: Create File", "CREATE_FILE", "There was an error in making file id", err)
 	}
 
 	data := []byte(fmt.Sprintf("<--!%s-->\n", id.String()))
 
 	err = os.WriteFile(filePath, data, 0644)
 
-	message := Payload {
-		Success: true,
-		Data: filePath,
+	if err != nil {
+		return failure("File Services: Create File", "CREATE_FILE", "There was an error in writing the file", err)
 	}
-	if f.Ctx != nil {
-		runtime.EventsEmit(f.Ctx, "file-created", message)
-		LogInfo("[FileService]","Create File Process ended", filePath)
-    }
 
-	return "File created success fully", nil
+	return success("File Services: Create File", "CREATE_FILE", "File created successfully", filePath)
 }
 
-func (f *FileServices) ReadFile(FilePath string) (string, error) {
+func (f *FileServices) ReadFile(FilePath string) Payload {
 
 	content, err := os.ReadFile(FilePath)
 
 
 	if err != nil {
 		LogError("[FileServices]", "There was problem in opening the file", err)
-		return "", errors.New("File doesn't exist")
+		return failure("File Services: Read File", "READ_FILE", "There was an error in reading the file", err)
 	}
 
 	ReadContent := string(content)
 
-	message := FilePath
-	
-	if f.Ctx != nil {
-		runtime.EventsEmit(f.Ctx, "file-opened", message)
-		LogInfo("[FileService]","File reading Process ended", FilePath)
-    }
-
-	return ReadContent, nil
+	return success("File Services: Create File", "CREATE_FILE", "File content read successfully", ReadContent)
 }
 
-func (f *FileServices) WriteFile(content, path string) {
+func (f *FileServices) WriteFile(content, path string) Payload {
 	//Make a temp path
 	TempPath := fmt.Sprintf("%s.temp",path)
 	OriginalPath := path
@@ -89,25 +78,22 @@ func (f *FileServices) WriteFile(content, path string) {
 
 	if err != nil {
 		LogError("[FileServices]", "There was problem in saving the temp file", err)
-		return 
+		return failure("File Services: Write File", "WRITE_FILE", "There was an error in making the temp file", err)
 	}
 	//rename temp
 
 	err = os.Rename(TempPath, OriginalPath)
 	if err != nil {
 		LogError("[FileServices]", "There was problem in saving the file", err)
-		return
+		return failure("File Services: Write File", "WRITE_FILE", "There was an error in renaming the temp file", err)
 	}
-	
-	message := OriginalPath
-	if f.Ctx != nil {
-		runtime.EventsEmit(f.Ctx, "file-saved", message)
-		LogInfo("[FileService]","File saved successfully", message)
-    }
+
+	return success("File Services: Write File", "WRITE_FILE", "File saved successfully", OriginalPath)
+
 
 }
 
-func (f *FileServices) MoveFile(destination, source, name string) (string, error) {
+func (f *FileServices) MoveFile(destination, source, name string) Payload {
 
 	dest := destination
 	src := source
@@ -118,30 +104,22 @@ func (f *FileServices) MoveFile(destination, source, name string) (string, error
 
 	if err == nil {
 		LogError("[FileServices]", "File already exist in the destination path", destinationPath)
-		return "", errors.New("File with same name already exist in the destination folder")
+		err = errors.New("File with same name already exist in the destination folder")
+		return failure("File Services: Move File", "MOVE_FILE", "File with the same name already exist", err)
 	}
 
 	err = os.Rename(src, destinationPath)
 	if err != nil {
 		LogError("[FileServices]", "There was problem in moving the file", err)
-		return "", err
+		return failure("File Services: Move File", "MOVE_FILE", "There was an error in moving the file", err)
 	}
 
-	message := Payload {
-		Success: true,
-		Data: destinationPath,
-	}
+	return success("File Services: Move File", "MOVE_FILE", "File moved successfully", destination)
 
-	if f.Ctx != nil {
-		runtime.EventsEmit(f.Ctx, "file-moved", message)
-		LogInfo("[FileService]","File moved successfully", message)
-    }
-
-	return destinationPath, nil
 
 }
 
-func (f *FileServices) DeleteFile (ProjectPath, FilePath, FileName string) (string, error) {
+func (f *FileServices) DeleteFile(ProjectPath, FilePath, FileName string) Payload {
 	// Take the file name and make the delete path
 	count := 0
 	TrashLoc := filepath.Join(ProjectPath, ".trash")
@@ -154,7 +132,6 @@ func (f *FileServices) DeleteFile (ProjectPath, FilePath, FileName string) (stri
 			LogAlerts("[FileService]", "Found a available path", destination)
 			break
 		}
-		// LogError("[FileService]", "Filepath already exists", filePath)
 		count++
 		destination = filepath.Join(TrashLoc, fmt.Sprintf("%d-%s", count, FileName))
 	}
@@ -162,43 +139,35 @@ func (f *FileServices) DeleteFile (ProjectPath, FilePath, FileName string) (stri
 	err := os.Rename(FilePath, destination)
 	if err != nil {
 		LogError("[FileServices]", "There was problem in deleted the file", err)
-		return "",err
+		return failure("File Services: Delete File", "DELETE_FILE", "There was an error in deleteing the file", err)
 	}
 
-	message := destination
-	if f.Ctx != nil {
-		runtime.EventsEmit(f.Ctx, "file-deleted", message)
-		LogInfo("[FileService]","File deleted successfully", message)
-    }
+	return success("File Services: Delete File", "DELETE_FILE", "File deleted successfully", destination)
 
-	return message,nil
 }
 
-func (f *FileServices) RenameFile (OldNamePath, BasePath, NewName string) {
+func (f *FileServices) RenameFile(OldNamePath, BasePath, NewName string) Payload {
 	NewNamePath := filepath.Join(BasePath, NewName)
 	_,err := os.Stat(NewNamePath)
-	LogAlerts("[FileService]","File renaming")
 
 	if err == nil {
 		LogAlerts("[FileServices]","File with the name already exist", err)
-		return
+		return failure("File Services: Rename File", "RENAME_FILE", "File with the same name exist", err)
 	}
 
 	err = os.Rename(OldNamePath, NewNamePath)
 
-	message := NewNamePath
-	if f.Ctx != nil {
-		runtime.EventsEmit(f.Ctx, "file-renamed", message)
-		LogInfo("[FileService]","File renamed successfully", message)
-    }
+	if err != nil {
+		return failure("File Services: Rename File", "RENAME_FILE", "Error in renaming the file", err)
+	}
+
+	return success("File Services: Rename File", "RENAME_FILE", "File renamed successfully", NewNamePath)
+
 }
 
-func (f *FileServices) CreateFolder(ProjectPath string) {
+func (f *FileServices) CreateFolder(ProjectPath string) Payload {
     count := 0
 	FolderPath := filepath.Join(ProjectPath, fmt.Sprintf("%d-New Folder", count))
-
-
-	LogInfo("[FileService]", "Checking if the folder exist")
 
 	for {
 		_, err := os.Stat(FolderPath) 
@@ -214,15 +183,9 @@ func (f *FileServices) CreateFolder(ProjectPath string) {
 
 	if err != nil {
 		LogError("[FileServices]", "There was a error in creating the folder", err)
+		return failure("File Services: Create Folder", "CREATE_FOLDER", "Error in creating new folder", err)
+
 	}
 
-	message := Payload {
-		Success: true,
-		Data: FolderPath,
-	}
-	if f.Ctx != nil {
-		runtime.EventsEmit(f.Ctx, "folder-created", message)
-		LogInfo("[FileService]","Create File Process ended", FolderPath)
-    }
-
+	return success("File Services: Create Folder", "CREATE_FOLDER", "Folder created successfully", FolderPath)
 }
