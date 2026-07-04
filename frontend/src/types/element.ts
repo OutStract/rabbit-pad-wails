@@ -6,12 +6,12 @@ export interface ElementData {
     name?: string;
     placement?: string;
     area?: string;
-    type?: string;
     text?: string;
     draggable?: string;
     focus?: string;
     path?: string;
     parent?: string;
+    tabIndex?: number;
     
 }
 
@@ -22,6 +22,7 @@ export interface GraphicElement extends ElementData {
 
 export interface InputElement extends ElementData {
     placeHolder?: string;
+    type?: string;
 }
 
 export interface ButtonElement extends ElementData {

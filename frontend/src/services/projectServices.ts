@@ -4,11 +4,12 @@ import { EventsEmit } from "../../wailsjs/runtime/runtime.js"
 import * as backend from '../../wailsjs/go/services/ProjectServices.js'
 import * as EVENT from '../events/events.ts'
 import { getBasePath, getName } from "../utils/pathUtils.ts"
+import { LibraryTree, ProjectTree } from "../types/trees.ts"
 
 
 
 class ProjectServices {
-    async makeProject(name: string): Promise<string | null> {
+    async makeProject(name: string): Promise< LibraryTree | null> {
         const projectName = name
         const libraryPath = appState.libraryPath
         if(!projectName || !libraryPath) {
@@ -21,10 +22,10 @@ class ProjectServices {
             return null;
         }
         EventsEmit(EVENT.UPDATE_STATE, result)
-        return result.data as string
+        return result.data as LibraryTree
     }
 
-    async projectTree(projectRootPath: string): Promise<string | null> {
+    async projectTree(projectRootPath: string): Promise< ProjectTree[] | null> {
         const projectRoot = projectRootPath
         if(!projectRoot) {
             // Added modal logs later
@@ -38,7 +39,7 @@ class ProjectServices {
             return null;
         }
         EventsEmit(EVENT.UPDATE_STATE, result)
-        return result.data as string
+        return result.data as ProjectTree[]
     }
 
     async renameProject(oldPath: string, newName: string): Promise<string | null> {
@@ -79,5 +80,6 @@ class ProjectServices {
         return result.data as string
     }
 
-
 }
+
+export const projectServices = new ProjectServices()

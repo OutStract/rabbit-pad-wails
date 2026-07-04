@@ -4,5 +4,5 @@ export interface Payload {
     action: string;
     error: unknown;
     message: string;
-    data: unknown;
+    data: any;
 }

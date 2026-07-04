@@ -3,6 +3,8 @@ import './style.css';
 import './app.css';
 import './styles/components/buttons.css'
 import './styles/components/inputs.css'
+import './styles/components/modals.css'
+
 import { renderStartup } from './components/startupView';
 import { startupServices } from './services/startupServices';
 import { appBody } from './components/appBody';

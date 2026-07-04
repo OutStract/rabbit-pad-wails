@@ -4,16 +4,19 @@ import { DOM } from "../services/domServices";
 import { appState } from "../services/stateServices";
 import { EventsOn } from '../../wailsjs/runtime/runtime';
 import * as EVENT from '../events/events.ts'
+import { projectServices } from "../services/projectServices.ts"
 
 export class LibraryView {
-    constructor(
-        private dom = DOM,
-    ) {}
+    private dom = DOM;
+    private service = projectServices
     
-    build() {    
+    build() {
         this.libraryOperations()    
         this.libraryTree()
         this.userActions()
+
+        // Editing the tree elements
+        this.appendProject()
     }
 
     libraryOperations() {
@@ -28,9 +31,52 @@ export class LibraryView {
         leftPane.append(libraryOperations)
 
         const createNewProject = this.dom.createIcon("add_box")
+        createNewProject.addEventListener('click', () => {
+            const libNameInput = this.dom.createInput({
+                tag: "input",
+                type: "text",
+                className: "lt-project-name-input",
+                placeHolder: "Project name"
+            })
+
+            const createBtn = this.dom.createButton({
+                tag: "button",
+                className: "action-button",
+                text: "Create Project"
+            })
+
+            createBtn.addEventListener('click', async () => {
+                const name = libNameInput.value
+                await this.service.makeProject(name)
+                const modal = this.dom.getElement(".lt-modal")
+                if(!modal) return
+                modal.remove()
+
+            })
+
+            const elements = [
+                libNameInput,
+                createBtn,
+            ]
+
+            this.dom.createModal("lt", elements)
+        })
+
         const deleteProject = this.dom.createIcon("delete")
 
         libraryOperations.append(createNewProject, deleteProject)
+    }
+
+    appendProject() {
+        EventsOn(EVENT.MAKE_PROJECT, (data) => {
+            this.dom.createTreeNode(
+                "lt",
+                ".lt-tree-container",
+                data.path,
+                "book_2",
+                data.name,
+            )
+        })
     }
     
     libraryTree() {
@@ -47,28 +93,15 @@ export class LibraryView {
         leftPane.append(treeContainer)
 
         libraryTree.forEach(node => {
-            const nodeBlock = this.dom.createElement({
-                tag: "div",
-                className: "lt-node-block",
-                parent: ".lt-tree-container"
-            })
 
-            const nodeIcon = this.dom.createIcon("book_2")
-
-            this.dom.addClass("lt-node-icon", nodeIcon)
-
-            const nodeName = this.dom.createElement({
-                tag: "p",
-                className: "lt-node-name",
-                text: node.name
-            })
-
-            nodeBlock.append(nodeIcon, nodeName)
+            const libNode = this.dom.createTreeNode(
+                "lt",
+                ".lt-tree-container",
+                node.path,
+                "book_2",
+                node.name,
+            )
         });
-
-        const openProject = async () => {
-
-        }
     }
 
     userActions() {

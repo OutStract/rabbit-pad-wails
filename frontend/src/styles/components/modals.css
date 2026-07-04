@@ -1,0 +1,27 @@
+.modal {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    background-color: var(--main-color);
+    border: solid var(--border-color) 2px;
+    min-height: 236px;
+    min-width: 452px;
+    z-index: 99;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: var(--radius)
+}
+
+.modal:hover {
+    border: solid var(--border-hover) 2.6px;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: end;
+}
+
+.modal-elements {
+    flex: 1;
+}

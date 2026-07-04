@@ -1,7 +1,7 @@
 import { EventsOn, EventsEmit } from '../../wailsjs/runtime/runtime';
 import { Payload } from '../types/payload';
 import * as EVENT from '../events/events.ts'
-import { LibraryTree, ProjectTree, RenameData } from '../types/trees.ts';
+import { LibraryTree, ProjectTree, RenameData, SelectedPaths } from '../types/trees.ts';
 import { getName } from '../utils/pathUtils.ts';
 import { LibTree } from '../../wailsjs/go/services/LibraryServices';
 
@@ -22,7 +22,7 @@ class Appstate {
     projectTree: ProjectTree[] = [];
     activeFilePath = "";
     activeFileName = "";
-    selectedFiles: unknown[] = []
+    selectedFiles: SelectedPaths[] = []
     leftPaneCollapsed = true
     rightPaneCollapsed = true
 
@@ -47,6 +47,7 @@ class Appstate {
                 break
 
             case EVENT.MAKE_PROJECT: // Append new Project node
+            this.libraryTree.push(payload.data as LibraryTree)
                 EventsEmit(payload.action, payload.data)
                 break
 
@@ -54,11 +55,13 @@ class Appstate {
                 const data = payload.data as RenameData
                 const oldPath = data.oldPath
                 const newPath = data.newPath
+                const lastMod = data.lastMod
                 const oldNode = this.libraryTree.find(node => node.path == oldPath)
 
                 if(oldNode) {
                     oldNode.name = getName(newPath)
                     oldNode.path = newPath
+                    oldNode.lastMod = lastMod
                 }
                 EventsEmit(payload.action, payload.data)
                 break

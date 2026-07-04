@@ -29,8 +29,23 @@ type Settings struct {
     Debug bool
 }
 
+type LibraryTree struct {
+	Name string `json:"name"`
+	Path string `json:"path"`
+	LastMod string `json:"lastMod"`
+}
+
+type ProjectNode struct {
+    Name string `json:"name"`
+    Path string `json:"path"`
+    IsFolder bool `json:"isFolder"`
+    Children []ProjectNode `json:"children"`
+}
+
+
 
 type RenameData struct {
     OldPath string `json:"oldPath"`
     NewPath string	`json:"newPath"`
+    LastMod string `json:"lastMod"`
 }

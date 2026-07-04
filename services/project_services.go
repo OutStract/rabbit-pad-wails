@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 	"path/filepath"
 
 	//"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -69,17 +70,19 @@ func (p *ProjectServices) MakeProject (libPath, projectName string) Payload {
 		return failure("Project Services: Make Project", "MAKE_PROJECT", "There was a problem in making the trash folder", err)
 	}
 
-	return success("Project Services: Make Project", "MAKE_PROJECT", "Project created successfully", projectPath)
+	info,err := os.Stat(projectPath)
+	modTime := info.ModTime()
+
+	newProject := LibraryTree {
+		Name: projectName,
+		Path: projectPath,
+		LastMod: modTime.Format(time.RFC3339),
+	}
+
+	return success("Project Services: Make Project", "MAKE_PROJECT", "Project created successfully", newProject)
 
 }
 
-type ProjectNode struct {
-		Name string `json:"name"`
-		Path string `json:"path"`
-		IsFolder bool `json:"isFolder"`
-		Children []ProjectNode `json:"children"`
-
-}
 
 func (p *ProjectServices) BuildProjectTree(projectRoot string) ([]ProjectNode, error)  {
 	projectTree := []ProjectNode{}
@@ -130,7 +133,7 @@ func (p *ProjectServices) BuildProjectTree(projectRoot string) ([]ProjectNode, e
 	return projectTree, nil
 }
 
-func (p* ProjectServices) ProjectTree(projectRoot string) Payload {
+func (p *ProjectServices) ProjectTree(projectRoot string) Payload {
 	result, err := p.BuildProjectTree(projectRoot)
 
 	if err != nil {
@@ -138,8 +141,6 @@ func (p* ProjectServices) ProjectTree(projectRoot string) Payload {
 	}
 
 	return success("Project Services: Project  Tree", "PROJECT_TREE", "Project tree read successfully", result)
-
-
 }
 
 func (p *ProjectServices) RenameProject(OldNamePath, BasePath, NewName string) Payload {
@@ -157,10 +158,13 @@ func (p *ProjectServices) RenameProject(OldNamePath, BasePath, NewName string) P
 		return failure("Project Services: Rename Project", "RENAME_PROJECT", "Error in renaming the project", err)
 	}
 
+	info,err := os.Stat(NewNamePath)
+	modTime := info.ModTime()
 
 	data := RenameData{
 		OldPath: OldNamePath,
 		NewPath: NewNamePath,
+		LastMod: modTime.Format(time.RFC3339),
 	}
 
 	return success("Project Services: Rename Project", "RENAME_PROJECT", "Project renamed successfully", data)

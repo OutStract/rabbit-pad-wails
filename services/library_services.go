@@ -39,11 +39,7 @@ func (l *LibraryServices) MakeLib(name, path string) Payload {
 }
 
 
-type LibraryTree struct {
-	Name string `json:"name"`
-	Path string `json:"path"`
-	LastMod string `json:"lastMod"`
-}
+
 
 func (l *LibraryServices) LibTree(libRoot string) Payload {
 
