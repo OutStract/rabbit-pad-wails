@@ -1,4 +1,4 @@
-import { EventsOn, EventsEmit } from '../../wailsjs/runtime/runtime';
+import { EventsOn, EventsEmit } from '../../frontend/wailsjs/runtime/runtime';
 import { getName } from '../Labours/splitLabour';
 import {appstate} from '/src/appstate/appstate.js'
 import {logger} from '/src/logs/logger.js'

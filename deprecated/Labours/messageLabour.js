@@ -1,4 +1,4 @@
-import { events, onPayload } from "../events/events"
+import { events, onPayload } from "../../frontend/src/events/events"
 import { get } from '../appstate/skeleton'
 onPayload(events.app.req.result, {callback: userMessage})
 

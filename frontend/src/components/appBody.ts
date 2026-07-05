@@ -2,9 +2,8 @@ import { DOM } from "../services/domServices";
 import { appState } from "../services/stateServices";
 
 class AppBody {
-    constructor(
-        private dom = DOM
-    ) {}
+    dom = DOM
+    
     build() {
         this.header()
         this.content()

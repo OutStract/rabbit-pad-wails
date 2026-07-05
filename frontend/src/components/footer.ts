@@ -1,9 +1,7 @@
 import { DOM } from "../services/domServices";
 
 class Footer {
-    constructor(
-        private dom = DOM
-    ) {}
+    dom = DOM
 
     build() {
         const footer = this.dom.getElement(".rp-footer-body")

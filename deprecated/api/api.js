@@ -1,9 +1,9 @@
 import {logger} from '/src/logs/logger.js'
 
-import { ConfigCheck, UpdateConfig  } from '../../wailsjs/go/services/StartUpServices.js';
-import { MakeLib, LibTree, LoadLibConfig, UpdateLibConfig } from '../../wailsjs/go/services/LibraryServices.js';
-import { MakeProject, ProjectTree } from '../../wailsjs/go/services/ProjectServices.js';
-import { CreateFile, ReadFile, WriteFile, MoveFile, DeleteFile, RenameFile, CreateFolder } from '../../wailsjs/go/services/FileServices.js';
+import { ConfigCheck, UpdateConfig  } from '../../frontend/wailsjs/go/services/StartUpServices.js';
+import { MakeLib, LibTree, LoadLibConfig, UpdateLibConfig } from '../../frontend/wailsjs/go/services/LibraryServices.js';
+import { MakeProject, ProjectTree } from '../../frontend/wailsjs/go/services/ProjectServices.js';
+import { CreateFile, ReadFile, WriteFile, MoveFile, DeleteFile, RenameFile, CreateFolder } from '../../frontend/wailsjs/go/services/FileServices.js';
 
 // FROM FRONTEND TO BACKEND
 export const startUpServices = {

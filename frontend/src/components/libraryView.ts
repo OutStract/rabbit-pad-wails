@@ -5,6 +5,8 @@ import { appState } from "../services/stateServices";
 import { EventsOn } from '../../wailsjs/runtime/runtime';
 import * as EVENT from '../events/events.ts'
 import { projectServices } from "../services/projectServices.ts"
+import { domEvents } from '../services/shortcutService.ts';
+
 
 export class LibraryView {
     private dom = DOM;
@@ -101,6 +103,10 @@ export class LibraryView {
                 "book_2",
                 node.name,
             )
+            libNode.addEventListener('click', (event) => {
+                domEvents.select(treeContainer, ".lt-node-block", node, libNode, event)
+            })
+
         });
     }
 

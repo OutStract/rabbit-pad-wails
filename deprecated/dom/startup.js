@@ -4,7 +4,7 @@ import { get, skeleton } from '/src/appstate/skeleton.js'
 import {events, emit} from '/src/events/events.js'
 
 
-import { OpenDirectory } from '../../wailsjs/go/services/DialogServices.js';
+import { OpenDirectory } from '../../frontend/wailsjs/go/services/DialogServices.js';
 
 export function renderStartUp () {
     console.log("STARTUP SUCCESS")

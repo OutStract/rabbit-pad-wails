@@ -22,7 +22,9 @@ class Appstate {
     projectTree: ProjectTree[] = [];
     activeFilePath = "";
     activeFileName = "";
-    selectedFiles: SelectedPaths[] = []
+    
+    // Dom STATES
+    selectedFiles = new Set()
     leftPaneCollapsed = true
     rightPaneCollapsed = true
 

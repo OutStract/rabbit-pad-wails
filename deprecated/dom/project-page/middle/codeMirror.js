@@ -54,13 +54,14 @@ async function readFile() {
 
 // --- MAIN WRAPPER FUNCTION ---
 export function codeMirror() {
-    console.log("STEP 3",appstate.file.path)
     const middleBody = get("codeMirror.js", "middle", "middleBody")
     middleBody.replaceChildren()
 
     const codeMirrorContainer = document.createElement("div")
     codeMirrorContainer.id = "editor-container"
     middleBody.append(codeMirrorContainer)
+
+    // Text styles
 
     const textStyling = HighlightStyle.define([
         { tag: t.heading1, fontWeight: "bold", fontSize: "1.6em", textAlign: "center" },
@@ -74,6 +75,7 @@ export function codeMirror() {
         { tag: t.strong, fontWeight: "bold" }
     ])
 
+    // Timeout and save handler
     let timeout = null
     const contentListener = EditorView.updateListener.of((ViewUpdate) => {
         if (ViewUpdate.docChanged) {
@@ -86,12 +88,14 @@ export function codeMirror() {
         }
     })
 
+    // File Id style
     const hideDecoration = Decoration.mark({
         attributes: {
             style: "opacity: 0.5; background-color: rgba(150, 150, 150, 0.1); pointer-events: none; user-select: none;"
         }
     });
 
+    // 
     function findRangesToHide(state) {
         const builder = new RangeSetBuilder();
         const text = state.doc.toString();
@@ -139,11 +143,12 @@ export function codeMirror() {
                 modifiedChanges.push({ from: fromA, to: toA, insert: inserted });
             }
         });
-
         if (transactionBlocked && modifiedChanges.length === 0) return [];
         return { changes: modifiedChanges, selection: tr.selection };
     });
 
+
+    
     // Populate global configuration extensions arrays
     editorExtensions = [
         highlightSpecialChars(),
