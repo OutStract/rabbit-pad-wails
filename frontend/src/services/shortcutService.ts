@@ -16,6 +16,8 @@ class ShortcutService {
     select(tree: HTMLElement, selector: string, node: LibraryTree, cell: HTMLElement, event: KeyboardEvent | MouseEvent) {
         if(event.ctrlKey) {
             this.ctrlClick(node, cell)
+        } else if (event.shiftKey) {
+            this.shiftClick(tree, selector, node, cell)
         } else {
             this.cellClick(tree, selector, node, cell)
         }
@@ -53,8 +55,41 @@ class ShortcutService {
         }
     }
 
-    shiftClick() {
-        
+    shiftClick(tree: HTMLElement, selector: string, node: LibraryTree, cell: HTMLElement) {
+        // Get the cell that user clicked with shift
+            if(!this.lastSelectedElement) {
+                this.lastSelectedElement = cell
+            }
+
+            // Make an array of all the cell in the container with the selector
+            const allCells = Array.from(tree.querySelectorAll(selector));
+
+            // Find the index of the first cell user slected
+            const startIdx = allCells.indexOf(this.lastSelectedElement)
+
+            // Make a const with the last clicked element from the user
+            const endClicked = cell
+            const endIdx = allCells.indexOf(endClicked)
+
+            // Find which clicked cell has the smaller and bigger index number
+            const minIdx = Math.min(startIdx, endIdx);
+            const maxIdx = Math.max(startIdx, endIdx);
+
+            // Clean the tree of previous cells
+            tree.querySelectorAll('.selected').forEach(el => {
+                el.classList.remove('selected')
+            })
+            
+            // Loop through each element in the array 
+            for(let i = minIdx ; i <= maxIdx ; i++) {
+                const currentCell = allCells[i]
+                // FInd the element in the dom
+
+                if(currentCell) {
+                    this.set.add(node)
+                    currentCell.classList.add("selected");
+                }
+            }
     }
 }
 

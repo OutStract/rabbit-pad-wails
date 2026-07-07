@@ -11,7 +11,7 @@ class Dom {
         return element as HTMLElement
     }
 
-    createElement(data: ElementData): HTMLElement {
+    createElement(data: ElementData, border?: boolean): HTMLElement {
         const element = document.createElement(data.tag)
         element.classList.add(data.className ?? "")
         element.id = data.id ?? ""
@@ -27,6 +27,9 @@ class Dom {
         if(data.parent) {
             const parentElement = document.querySelector(data.parent)
             parentElement?.append(element)
+        }
+        if(border) {
+            element.style.border = "solid 2px"
         }
         return element
     }

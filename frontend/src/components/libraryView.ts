@@ -15,7 +15,7 @@ export class LibraryView {
     build() {
         this.libraryOperations()    
         this.libraryTree()
-        this.userActions()
+        this.metadataPane()
 
         // Editing the tree elements
         this.appendProject()
@@ -110,10 +110,60 @@ export class LibraryView {
         });
     }
 
-    userActions() {
+    metadataPane() {
         const middle = this.dom.getElement(".rp-middle-pane")
         if(!middle) return
+        
+        const middleContainer = this.dom.createElement({
+            tag: "div",
+            className: "lt-middle-container"
+        })
 
+        const middleTop = this.dom.createElement({
+            tag: "div",
+            className: "lt-middle-top"
+        }, true)
+
+        const middleBottom = this.dom.createElement({
+            tag: "div",
+            className: "lt-middle-bottom"
+        }, true)
+
+        middleContainer.append(middleTop, middleBottom)
+
+        middle.append(middleContainer)
+
+        const topLeft = this.dom.createElement({
+            tag: "div",
+            className: "lt-top-left"
+        }, true)
+
+
+        const topRight = this.dom.createElement({
+            tag: "div",
+            className: "lt-top-right"
+        }, true)
+
+        middleTop.append(topLeft, topRight)
+
+        const bottomLeft = this.dom.createElement({
+            tag: "div",
+            className: "lt-bottom-right"
+        }, true)
+
+        const bottomRight = this.dom.createElement({
+            tag: "div",
+            className: "lt-bottom-right"
+        }, true)
+
+        middleBottom.append(bottomLeft, bottomRight)
+
+        const coverBlock = this.dom.createElement({
+            tag: "div",
+            className: "cover-block"
+        })
+
+        topLeft.append(coverBlock)
     }
 }
 

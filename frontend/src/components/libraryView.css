@@ -56,3 +56,48 @@
 .selected {
     background-color: var(--hover);
 }
+
+/*MIDDLE PANE*/
+
+.lt-middle-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.lt-middle-top {
+    flex: 1;
+    display: flex;
+}
+
+.lt-top-left{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cover-block {
+    width: 70%;
+    height: 80%;
+    border-radius: var(--radius);
+    border: dashed 1px;
+}
+
+.lt-top-right{
+    width: 65%;
+}
+
+.lt-middle-bottom {
+    flex: 1;
+    display: flex;
+}
+
+.lt-bottom-left{
+    flex: 1;
+}
+
+.lt-bottom-right{
+    flex: 1;
+}
