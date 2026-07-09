@@ -13,6 +13,8 @@ import { renderFooter } from './components/footer';
 import { renderHeader } from './components/header';
 import { libraryServices } from './services/libraryServices';
 import { appState } from './services/stateServices';
+import { EventsOn } from '../wailsjs/runtime/runtime';
+import { APP_CONFIG_UPDATE } from './events/events';
 
 const app = document.getElementById("app");
 if(!app) {
@@ -22,10 +24,11 @@ if(!app) {
 appState.Initialize()
 
 
-class StartUp {
 
+class StartUp {
     async start() {
         const configPath = await startupServices.configCheck()
+        
         if(!configPath) {
             renderStartup.build()
             return
@@ -43,6 +46,10 @@ class StartUp {
         
     }
 }
+
+EventsOn(APP_CONFIG_UPDATE, () => {
+startup.start()
+})
 
 const startup = new StartUp()
 startup.start()

@@ -14,7 +14,8 @@ export class StartUpServices {
             console.log(result.message)
             // and return null value
             return null
-        }    
+        }  
+        console.log(result.message)
         return result.data as string
     }
 
@@ -24,6 +25,7 @@ export class StartUpServices {
             console.log(result.message)
             return null
         }
+        EventsEmit(UPDATE_STATE, result)
         return result.data as string
     }
 

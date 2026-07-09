@@ -1,5 +1,6 @@
 
 import { DOM } from '../services/domServices';
+import { libraryServices } from '../services/libraryServices';
 import { startupServices } from '../services/startupServices';
 import './startupView.css'
 
@@ -8,11 +9,18 @@ class StartupView{
         private dom = DOM
     ) {}
     build() {
+
+        const startupContainer = this.dom.createElement({
+            tag: "div",
+            className: "rp-startup",
+            name: "Startup Container",
+            parent: "#app"
+        })
+
         const startupView = this.dom.createElement({
             tag: "div",
             className: "rp-card-startup",
-            name: "Startup Container",
-            parent: "#app"
+            parent: ".rp-startup"
         })
         console.log(startupView)
 
@@ -65,6 +73,7 @@ class StartupView{
 
         const libraryInput = this.dom.createInput({
             tag: "input",
+            className: "rp-startup-input",
             parent: ".rp-startup-name-input",
             placeHolder: "Library name"
         })
@@ -135,6 +144,7 @@ class StartupView{
                 return
             }
             const result = await startupServices.updateConfig(libName, libPath)
+            const makeLin = await libraryServices.makeLibrary(libName, libPath)
             libraryCreateBtn.removeEventListener("close", createLibrary)
             libraryCreateBtn.addEventListener("click", createLibrary)
         }

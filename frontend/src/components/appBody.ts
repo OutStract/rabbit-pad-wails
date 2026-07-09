@@ -5,6 +5,8 @@ class AppBody {
     dom = DOM
     
     build() {
+        const app = document.querySelector("#app")
+        app?.replaceChildren()
         this.header()
         this.content()
         this.leftPane()

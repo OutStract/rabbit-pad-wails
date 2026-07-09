@@ -37,6 +37,8 @@ class Appstate {
 
             case EVENT.APP_CONFIG_UPDATE: // Get config file location
                 this.libraryConfigPath = payload.data as string;
+                console.log(payload.action)
+                EventsEmit(payload.action)
                 break
 
             case EVENT.LAST_OPENED_PROJECT: // Get last opened project path

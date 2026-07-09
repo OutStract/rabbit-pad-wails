@@ -1,6 +1,14 @@
+.rp-startup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+}
+
 .rp-card-startup {
-    width: 600px;
-    height: 300px;
+    max-width: 600px;
+    max-height: 300px;
     border: solid var(--accent);
     display: flex;
     justify-content: space-between;
@@ -28,7 +36,7 @@
 }
 
 .rp-startup-right{
-    flex: 2;  
+    flex: 1;  
     display:flex;
     flex-direction: column;
 }
@@ -71,7 +79,8 @@
 }
 
 .rp-user-location {
-    color: #656565;
+    color: var(--accent);
+    font-weight: 800;
     font-size: 12px;
     margin: 0;
     padding: 0;
